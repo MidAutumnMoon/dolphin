@@ -537,14 +537,6 @@ void DolphinContextMenu::addAdditionalActions(const KFileItemListProperties &pro
         additionalActions << m_mainWindow->actionCollection()->action(QStringLiteral("open_terminal_here"));
     }
     m_fileItemActions->addActionsTo(this, KFileItemActions::MenuActionSource::All, additionalActions);
-
-    const DolphinView *view = m_mainWindow->activeViewContainer()->view();
-    const QList<QAction *> versionControlActions = view->versionControlActions(m_selectedItems);
-    if (!versionControlActions.isEmpty()) {
-        addSeparator();
-        addActions(versionControlActions);
-        addSeparator();
-    }
 }
 
 #include "moc_dolphincontextmenu.cpp"

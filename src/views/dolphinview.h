@@ -34,7 +34,7 @@ class KItemListContainer;
 class KItemModelBase;
 class KItemSet;
 class ToolTipManager;
-class VersionControlObserver;
+
 class ViewProperties;
 class QLabel;
 class QGraphicsSceneDragDropEvent;
@@ -291,12 +291,6 @@ public:
      * Any pending requests of status bar text are killed.
      */
     void requestStatusBarText();
-
-    /**
-     * Returns the version control actions that are provided for the items \p items.
-     * Usually the actions are presented in the context menu.
-     */
-    QList<QAction *> versionControlActions(const KFileItemList &items) const;
 
     /**
      * Returns the state of the paste action:
@@ -1031,8 +1025,6 @@ private:
     bool m_markFirstNewlySelectedItemAsCurrent;
     /// Decides whether items created by jobs should automatically be selected.
     bool m_selectJobCreatedItems;
-
-    VersionControlObserver *m_versionControlObserver;
 
     QTimer *m_twoClicksRenamingTimer;
     QUrl m_twoClicksRenamingItemUrl;

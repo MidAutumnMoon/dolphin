@@ -9,14 +9,6 @@
 
 #include "dolphin_export.h"
 #include "kitemviews/kfileitemlistwidget.h"
-#include "versioncontrol/kversioncontrolplugin.h"
-
-/**
- * @brief Extends KFileItemListWidget to handle the "version" role.
- *
- * The "version" role is set if version-control-plugins have been enabled.
- * @see KVersionControlPlugin
- */
 class DOLPHIN_EXPORT DolphinFileItemListWidget : public KFileItemListWidget
 {
     Q_OBJECT
@@ -28,8 +20,6 @@ public:
 protected:
     void refreshCache() override;
 
-private:
-    QString overlayForState(KVersionControlPlugin::ItemVersion version) const;
 };
 
 #endif

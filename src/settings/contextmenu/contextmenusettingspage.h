@@ -44,10 +44,7 @@ private Q_SLOTS:
     void loadServices();
 
 private:
-    /**
-     * Loads installed version control systems.
-     */
-    void loadVersionControlSystems();
+
 
     bool isInServicesList(const QString &service) const;
 
@@ -64,7 +61,7 @@ private:
     QSortFilterProxyModel *m_sortModel;
     QListView *m_listView;
     QLineEdit *m_searchLineEdit;
-    QStringList m_enabledVcsPlugins;
+
     const KActionCollection *m_actions;
     const QStringList m_actionIds;
 };

@@ -15,41 +15,6 @@ remove_definitions(
     -DQT_NO_CAST_TO_ASCII
 )
 
-##########################################
-
-add_library(dolphinvcs SHARED)
-
-target_sources(dolphinvcs PRIVATE
-    views/versioncontrol/kversioncontrolplugin.cpp
-)
-
-generate_export_header(dolphinvcs BASE_NAME dolphinvcs)
-
-target_link_libraries(
-    dolphinvcs PUBLIC
-    Qt6::Widgets
-)
-
-set_target_properties(dolphinvcs PROPERTIES
-    VERSION ${DOLPHINVCS_VERSION}
-    SOVERSION ${DOLPHINVCS_SOVERSION}
-    EXPORT_NAME DolphinVcs
-)
-
-ecm_generate_headers(dolphinvcs_LIB_HEADERS
-    HEADER_NAMES
-    KVersionControlPlugin
-
-    RELATIVE "views/versioncontrol"
-    REQUIRED_HEADERS dolphinvcs_LIB_HEADERS
-)
-target_include_directories(dolphinvcs INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR}>")
-
-install(TARGETS dolphinvcs EXPORT DolphinVcsTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dolphinvcs_export.h DESTINATION ${KDE_INSTALL_INCLUDEDIR} COMPONENT Devel)
-install(FILES ${dolphinvcs_LIB_HEADERS} DESTINATION "${KDE_INSTALL_INCLUDEDIR}/Dolphin" COMPONENT Devel)
-
 ########### next target ###############
 
 add_library(dolphinprivate SHARED)
@@ -112,8 +77,6 @@ target_sources(dolphinprivate PRIVATE
     views/dolphinview.cpp
     views/dolphinviewactionhandler.cpp
     views/draganddrophelper.cpp
-    views/versioncontrol/updateitemstatesthread.cpp
-    views/versioncontrol/versioncontrolobserver.cpp
     views/viewmodecontroller.cpp
     views/viewproperties.cpp
     views/zoomlevelinfo.cpp
@@ -166,8 +129,6 @@ target_sources(dolphinprivate PRIVATE
     views/dolphinview.h
     views/dolphinviewactionhandler.h
     views/draganddrophelper.h
-    views/versioncontrol/updateitemstatesthread.h
-    views/versioncontrol/versioncontrolobserver.h
     views/viewmodecontroller.h
     views/viewproperties.h
     views/zoomlevelinfo.h
@@ -203,7 +164,7 @@ kconfig_add_kcfg_files(dolphinprivate
     settings/dolphin_contentdisplaysettings.kcfgc
     settings/dolphin_generalsettings.kcfgc
     settings/dolphin_contextmenusettings.kcfgc
-    settings/dolphin_versioncontrolsettings.kcfgc
+
     GENERATE_MOC
 )
 
@@ -211,7 +172,6 @@ generate_export_header(dolphinprivate BASE_NAME dolphin)
 
 target_link_libraries(
     dolphinprivate PUBLIC
-    dolphinvcs
     Qt6::Concurrent
     Qt6::DBus
     Qt6::Gui
@@ -602,7 +562,7 @@ install( FILES settings/dolphin_directoryviewpropertysettings.kcfg
                settings/dolphin_contextmenusettings.kcfg
                settings/dolphin_iconsmodesettings.kcfg
                settings/dolphin_detailsmodesettings.kcfg
-               settings/dolphin_versioncontrolsettings.kcfg
+
          DESTINATION ${KDE_INSTALL_KCFGDIR} )
 
 install( FILES settings/dolphin_detailsmodesettings.upd

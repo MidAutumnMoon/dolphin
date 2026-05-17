@@ -7,7 +7,7 @@
 #include "contextmenusettingspage.h"
 
 #include "dolphin_contextmenusettings.h"
-#include "dolphin_versioncontrolsettings.h"
+
 #include "global.h"
 #include "settings/servicemodel.h"
 
@@ -38,7 +38,6 @@
 namespace
 {
 const bool ShowDeleteDefault = false;
-const char VersionControlServicePrefix[] = "_version_control_";
 const char DeleteService[] = "_delete";
 const char CopyToMoveToService[] = "_copy_to_move_to";
 }
@@ -49,7 +48,6 @@ ContextMenuSettingsPage::ContextMenuSettingsPage(QWidget *parent, const KActionC
     , m_serviceModel(nullptr)
     , m_sortModel(nullptr)
     , m_listView(nullptr)
-    , m_enabledVcsPlugins()
     , m_actions(actions)
     , m_actionIds(actionIds)
 {
@@ -102,8 +100,7 @@ ContextMenuSettingsPage::ContextMenuSettingsPage(QWidget *parent, const KActionC
 
     topLayout->addWidget(m_listView);
 
-    m_enabledVcsPlugins = VersionControlSettings::enabledPlugins();
-    std::sort(m_enabledVcsPlugins.begin(), m_enabledVcsPlugins.end());
+
 }
 
 ContextMenuSettingsPage::~ContextMenuSettingsPage() = default;
@@ -173,18 +170,12 @@ void ContextMenuSettingsPage::applySettings()
     KConfig config(QStringLiteral("kservicemenurc"), KConfig::NoGlobals);
     KConfigGroup showGroup = config.group(QStringLiteral("Show"));
 
-    QStringList enabledPlugins;
-
     for (int i = 0; i < m_serviceModel->rowCount(); ++i) {
         const QModelIndex index = m_serviceModel->index(i, 0);
         const QString service = m_serviceModel->data(index, ServiceModel::DesktopEntryNameRole).toString();
         const bool checked = m_serviceModel->data(index, Qt::CheckStateRole).value<Qt::CheckState>() == Qt::Checked;
 
-        if (service.startsWith(VersionControlServicePrefix)) {
-            if (checked) {
-                enabledPlugins.append(m_serviceModel->data(index, Qt::DisplayRole).toString());
-            }
-        } else if (service == QLatin1String(DeleteService)) {
+        if (service == QLatin1String(DeleteService)) {
             KSharedConfig::Ptr globalConfig = KSharedConfig::openConfig(QStringLiteral("kdeglobals"), KConfig::NoGlobals);
             KConfigGroup configGroup(globalConfig, QStringLiteral("KDE"));
             configGroup.writeEntry("ShowDeleteCommand", checked);
@@ -201,11 +192,6 @@ void ContextMenuSettingsPage::applySettings()
     }
 
     showGroup.sync();
-
-    if (m_enabledVcsPlugins != enabledPlugins) {
-        VersionControlSettings::setEnabledPlugins(enabledPlugins);
-        VersionControlSettings::self()->save();
-    }
 }
 
 void ContextMenuSettingsPage::restoreDefaults()
@@ -215,7 +201,7 @@ void ContextMenuSettingsPage::restoreDefaults()
         const QString service = m_serviceModel->data(index, ServiceModel::DesktopEntryNameRole).toString();
 
         const bool checked =
-            !service.startsWith(VersionControlServicePrefix) && service != QLatin1String(DeleteService) && service != QLatin1String(CopyToMoveToService);
+            service != QLatin1String(DeleteService) && service != QLatin1String(CopyToMoveToService);
         m_serviceModel->setData(index, checked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
     }
 }
@@ -224,8 +210,6 @@ void ContextMenuSettingsPage::showEvent(QShowEvent *event)
 {
     if (!event->spontaneous() && !m_initialized) {
         loadServices();
-
-        loadVersionControlSystems();
 
         // Add "Show 'Delete' command" as service
         KSharedConfig::Ptr globalConfig = KSharedConfig::openConfig(QStringLiteral("kdeglobals"), KConfig::IncludeGlobals);
@@ -308,22 +292,7 @@ void ContextMenuSettingsPage::loadServices()
     m_sortModel->sort(Qt::DisplayRole);
 }
 
-void ContextMenuSettingsPage::loadVersionControlSystems()
-{
-    const QStringList enabledPlugins = VersionControlSettings::enabledPlugins();
 
-    // Create a checkbox for each available version control plugin
-    QSet<QString> loadedPlugins;
-
-    const QVector<KPluginMetaData> plugins = KPluginMetaData::findPlugins(QStringLiteral("dolphin/vcs"));
-    for (const auto &plugin : plugins) {
-        const QString pluginName = plugin.name();
-        addRow(QStringLiteral("code-class"), pluginName, VersionControlServicePrefix + pluginName, enabledPlugins.contains(pluginName), plugin.fileName());
-        loadedPlugins += pluginName;
-    }
-
-    m_sortModel->sort(Qt::DisplayRole);
-}
 
 bool ContextMenuSettingsPage::isInServicesList(const QString &service) const
 {

@@ -24,7 +24,7 @@
 #include "kitemviews/private/kitemlistroleeditor.h"
 #include "selectionmode/singleclickselectionproxystyle.h"
 #include "settings/viewmodes/viewmodesettings.h"
-#include "versioncontrol/versioncontrolobserver.h"
+
 #include "viewproperties.h"
 #include "views/tooltips/tooltipmanager.h"
 #include "zoomlevelinfo.h"
@@ -101,7 +101,6 @@ DolphinView::DolphinView(const QUrl &url, QWidget *parent)
     , m_selectedUrls()
     , m_clearSelectionBeforeSelectingNewItems(false)
     , m_markFirstNewlySelectedItemAsCurrent(false)
-    , m_versionControlObserver(nullptr)
     , m_twoClicksRenamingTimer(nullptr)
     , m_placeholderLabel(nullptr)
     , m_showLoadingPlaceholderTimer(nullptr)
@@ -254,15 +253,6 @@ DolphinView::DolphinView(const QUrl &url, QWidget *parent)
     m_toolTipManager = new ToolTipManager(this);
     connect(m_toolTipManager, &ToolTipManager::urlActivated, this, &DolphinView::urlActivated);
 #endif
-
-    m_versionControlObserver = new VersionControlObserver(this);
-    m_versionControlObserver->setView(this);
-    m_versionControlObserver->setModel(m_model);
-    connect(m_versionControlObserver, &VersionControlObserver::infoMessage, this, &DolphinView::infoMessage);
-    connect(m_versionControlObserver, &VersionControlObserver::errorMessage, this, [this](const QString &message) {
-        Q_EMIT errorMessage(message, KIO::ERR_UNKNOWN);
-    });
-    connect(m_versionControlObserver, &VersionControlObserver::operationCompletedMessage, this, &DolphinView::operationCompletedMessage);
 
     m_twoClicksRenamingTimer = new QTimer(this);
     m_twoClicksRenamingTimer->setSingleShot(true);
@@ -747,21 +737,7 @@ void DolphinView::emitStatusBarText(const int folderCount, const int fileCount, 
     Q_EMIT statusBarTextChanged(summary);
 }
 
-QList<QAction *> DolphinView::versionControlActions(const KFileItemList &items) const
-{
-    QList<QAction *> actions;
 
-    if (items.isEmpty()) {
-        const KFileItem item = m_model->rootItem();
-        if (!item.isNull()) {
-            actions = m_versionControlObserver->actions(KFileItemList() << item);
-        }
-    } else {
-        actions = m_versionControlObserver->actions(items);
-    }
-
-    return actions;
-}
 
 void DolphinView::setUrl(const QUrl &url)
 {
@@ -1515,14 +1491,12 @@ void DolphinView::slotModelChanged(KItemModelBase *current, KItemModelBase *prev
         Q_ASSERT(qobject_cast<KFileItemModel *>(previous));
         KFileItemModel *fileItemModel = static_cast<KFileItemModel *>(previous);
         disconnect(fileItemModel, &KFileItemModel::directoryLoadingCompleted, this, &DolphinView::slotDirectoryLoadingCompleted);
-        m_versionControlObserver->setModel(nullptr);
     }
 
     if (current) {
         Q_ASSERT(qobject_cast<KFileItemModel *>(current));
         KFileItemModel *fileItemModel = static_cast<KFileItemModel *>(current);
         connect(fileItemModel, &KFileItemModel::directoryLoadingCompleted, this, &DolphinView::slotDirectoryLoadingCompleted);
-        m_versionControlObserver->setModel(fileItemModel);
     }
 }
 

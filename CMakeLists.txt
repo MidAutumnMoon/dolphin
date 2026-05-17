@@ -40,11 +40,7 @@ ecm_setup_version(${RELEASE_SERVICE_VERSION} VARIABLE_PREFIX DOLPHIN
                   VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/src/dolphin_version.h"
 )
 
-ecm_setup_version(${RELEASE_SERVICE_VERSION} VARIABLE_PREFIX DOLPHINVCS
-                  VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/dolphinvcs_version.h"
-                  PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/DolphinVcsConfigVersion.cmake"
-                  SOVERSION 6
-)
+
 
 ecm_setup_version(${RELEASE_SERVICE_VERSION} VARIABLE_PREFIX DOLPHINPRIVATE
                   SOVERSION 6
@@ -166,32 +162,7 @@ endif()
 add_subdirectory(src)
 add_subdirectory(appiumtests)
 
-# CMake files
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/DolphinVcs")
 
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/DolphinVcsConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/DolphinVcsConfig.cmake"
-    INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR}
-)
-
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/DolphinVcsConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/DolphinVcsConfigVersion.cmake"
-    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-    COMPONENT Devel
-)
-
-install(EXPORT DolphinVcsTargets
-    DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-    FILE DolphinVcsTargets.cmake
-)
-
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/dolphinvcs_version.h"
-    DESTINATION "${KDE_INSTALL_INCLUDEDIR}/Dolphin"
-    COMPONENT Devel
-)
 
 ecm_generate_dbus_service_file(
     NAME org.freedesktop.FileManager1
