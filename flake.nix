@@ -105,28 +105,14 @@
         );
 
         shellHook = ''
+          # Shell-agnostic helper scripts (works in bash, fish, zsh...)
+          export PATH="$PWD/.bin''${PATH:+:}''${PATH}"
+
           # Local install prefix for icons, .desktop, etc.
           export DOLPHIN_DEV_PREFIX="$PWD/install"
 
           # XDG paths so the locally-installed app icon and desktop file are found
           export XDG_DATA_DIRS="''${DOLPHIN_DEV_PREFIX}/share''${XDG_DATA_DIRS:+:}''${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-
-          # Convenience aliases
-          dolphin-configure() {
-            cmake -G Ninja -B build -DCMAKE_INSTALL_PREFIX="''${DOLPHIN_DEV_PREFIX}" .
-          }
-          dolphin-build() {
-            cmake --build build -j$(nproc)
-          }
-          dolphin-install() {
-            cmake --install build
-          }
-          dolphin-run() {
-            "''${DOLPHIN_DEV_PREFIX}/bin/dolphin" "$@"
-          }
-          dolphin-rebuild() {
-            dolphin-build && dolphin-install && dolphin-run "$@"
-          }
 
           echo "🐬 Dolphin dev shell ready"
           echo "   dolphin-configure  # cmake -G Ninja -B build -DCMAKE_INSTALL_PREFIX=... ."
