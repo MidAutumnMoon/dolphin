@@ -29,3 +29,5 @@ apidocs
 doxygen.log
 .directory
 .cmake/
+
+.direnv/
