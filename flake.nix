@@ -56,9 +56,6 @@
             kdePackages.baloo
             kdePackages.baloo-widgets
 
-            # Optional but nice
-            kdePackages.kuserfeedback # telemetry (optional)
-
             # Misc
             kdePackages.packagekit-qt # service menu installer (optional)
         ];

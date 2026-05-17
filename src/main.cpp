@@ -15,9 +15,6 @@
 #include "dolphindebug.h"
 #include "dolphinmainwindow.h"
 #include "global.h"
-#if HAVE_KUSERFEEDBACK
-#include "userfeedback/dolphinfeedbackprovider.h"
-#endif
 
 #include <KAboutData>
 #include <KConfigGui>
@@ -266,11 +263,6 @@ int main(int argc, char **argv)
     if (adminWorkerInfoWanted) {
         Admin::guideUserTowardsUsingAdminWorker();
     }
-
-#if HAVE_KUSERFEEDBACK
-    auto feedbackProvider = DolphinFeedbackProvider::instance();
-    Q_UNUSED(feedbackProvider)
-#endif
 
     return app.exec(); // krazy:exclude=crash;
 }

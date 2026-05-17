@@ -380,19 +380,6 @@ if(HAVE_BALOO)
     )
 endif()
 
-if(HAVE_KUSERFEEDBACK)
-  target_sources(dolphinstatic PRIVATE
-        userfeedback/dolphinfeedbackprovider.cpp
-        userfeedback/settingsdatasource.cpp
-        userfeedback/placesdatasource.cpp
-        settings/userfeedback/userfeedbacksettingspage.cpp
-        userfeedback/dolphinfeedbackprovider.h
-        userfeedback/settingsdatasource.h
-        userfeedback/placesdatasource.h
-        settings/userfeedback/userfeedbacksettingspage.h
-    )
-endif()
-
 if(KF6KIO_VERSION VERSION_GREATER_EQUAL "6.24.0")
   target_sources(dolphinstatic PRIVATE
         servicemenushortcutmanager.cpp
@@ -429,14 +416,6 @@ if(HAVE_PACKAGEKIT)
   target_link_libraries(
         dolphinstatic
         PK::packagekitqt6
-    )
-endif()
-
-if (HAVE_KUSERFEEDBACK)
-  target_link_libraries(
-        dolphinstatic
-        KF6::UserFeedbackCore
-        KF6::UserFeedbackWidgets
     )
 endif()
 
