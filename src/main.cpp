@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: 2006 Peter Penz <peter.penz19@gmail.com>
  * SPDX-FileCopyrightText: 2006 Stefan Monov <logixoul@gmail.com>
  * SPDX-FileCopyrightText: 2015 Mathieu Tarral <mathieu.tarral@gmail.com>
+ * SPDX-FileCopyrightText: 2026 MidAutumnMoon
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -173,11 +174,7 @@ int main(int argc, char **argv)
         QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
         QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
-#ifdef FLATPAK
-        KDBusService dolphinDBusService(KDBusService::NoExitOnFailure);
-#else
         KDBusService dolphinDBusService;
-#endif
         DBusInterface interface;
         interface.setAsDaemon();
         return app.exec();
@@ -234,7 +231,7 @@ int main(int argc, char **argv)
     // Only restore session if:
     // 1. The "remember state" setting is enabled or session restoration after
     //    reboot is in use
-    // 2. This is the first instance or restoring multiple instances with 
+    // 2. This is the first instance or restoring multiple instances with
     //    session restoration after reboot enabled
     // 3. There is a session available to restore
     if (app.isSessionRestored() || GeneralSettings::rememberOpenedTabs()) {

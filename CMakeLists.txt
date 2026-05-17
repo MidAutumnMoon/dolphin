@@ -59,11 +59,11 @@ find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 )
 
 if (Qt6Gui_VERSION VERSION_GREATER_EQUAL "6.10.0")
-    find_package(Qt6GuiPrivate ${QT_MIN_VERSION} REQUIRED NO_MODULE)
+  find_package(Qt6GuiPrivate ${QT_MIN_VERSION} REQUIRED NO_MODULE)
 endif()
 
 if (UNIX AND NOT APPLE AND NOT HAIKU)
-    set(HAVE_X11 TRUE)
+  set(HAVE_X11 TRUE)
 endif()
 
 find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
@@ -96,7 +96,7 @@ set_package_properties(KF6UserFeedback
         )
 
 if(KF6UserFeedback_FOUND)
-    set(HAVE_KUSERFEEDBACK TRUE)
+  set(HAVE_KUSERFEEDBACK TRUE)
 endif()
 
 find_package(KF6 ${KF6_MIN_VERSION} OPTIONAL_COMPONENTS
@@ -110,7 +110,7 @@ set_package_properties(PackageKitQt6
         PURPOSE "Used in the service menu installer"
         )
 if(PackageKitQt6_FOUND)
-    set(HAVE_PACKAGEKIT TRUE)
+  set(HAVE_PACKAGEKIT TRUE)
 endif()
 
 find_package(KF6FileMetaData ${KF6_MIN_VERSION})
@@ -134,37 +134,37 @@ set_package_properties(KF6BalooWidgets PROPERTIES DESCRIPTION "Baloos Widgets"
                       )
 
 if (KF6Baloo_FOUND AND KF6BalooWidgets_FOUND)
-    message(STATUS "Baloo packages are found")
-    set(HAVE_BALOO TRUE)
+  message(STATUS "Baloo packages are found")
+  set(HAVE_BALOO TRUE)
 
-    find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+  find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
         Multimedia
         MultimediaWidgets
     )
 else ()
-    message(WARNING "Baloo packages not found. They are needed for the metadata features of Dolphin (including the information panel).")
+  message(WARNING "Baloo packages not found. They are needed for the metadata features of Dolphin (including the information panel).")
 endif()
 
 # TODO: drop HAVE_TERMINAL once we are sure the terminal panel works on Windows too.
 if(WIN32)
-    set(HAVE_TERMINAL FALSE)
+  set(HAVE_TERMINAL FALSE)
 else()
-    set(HAVE_TERMINAL TRUE)
+  set(HAVE_TERMINAL TRUE)
 endif()
 
 # Compatibility with platforms without native fts (e.g. musl)
 check_include_files("sys/types.h;sys/stat.h;fts.h" HAVE_FTS_H)
 if(HAVE_FTS_H AND NOT HAIKU)
-    check_function_exists(fts_open HAVE_FTS_OPEN)
-    if(NOT HAVE_FTS_OPEN)
-        check_library_exists(fts fts_open "" HAVE_LIB_FTS)
-    endif()
+  check_function_exists(fts_open HAVE_FTS_OPEN)
+  if(NOT HAVE_FTS_OPEN)
+    check_library_exists(fts fts_open "" HAVE_LIB_FTS)
+  endif()
 endif()
 
 if(HAVE_LIB_FTS)
-    set(FTS_LIB fts)
+  set(FTS_LIB fts)
 else()
-    set(FTS_LIB "")
+  set(FTS_LIB "")
 endif()
 
 add_subdirectory(src)
@@ -198,22 +198,13 @@ install(FILES
     COMPONENT Devel
 )
 
-if(FLATPAK)
-    ecm_generate_dbus_service_file(
-        NAME org.freedesktop.FileManager1
-        EXECUTABLE "${KDE_INSTALL_FULL_BINDIR}/dolphin --daemon"
-        SYSTEMD_SERVICE plasma-dolphin.service
-        DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR}
-    )
-else()
-    ecm_generate_dbus_service_file(
-        NAME org.freedesktop.FileManager1
-        EXECUTABLE "${KDE_INSTALL_FULL_BINDIR}/dolphin --daemon"
-        SYSTEMD_SERVICE plasma-dolphin.service
-        DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR}
-        RENAME org.kde.dolphin.FileManager1.service
-    )
-endif()
+ecm_generate_dbus_service_file(
+    NAME org.freedesktop.FileManager1
+    EXECUTABLE "${KDE_INSTALL_FULL_BINDIR}/dolphin --daemon"
+    SYSTEMD_SERVICE plasma-dolphin.service
+    DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR}
+    RENAME org.kde.dolphin.FileManager1.service
+)
 
 ecm_install_configured_files(INPUT plasma-dolphin.service.in DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR})
 
@@ -225,7 +216,7 @@ ecm_qt_install_logging_categories(
 
 ki18n_install(po)
 if(KF6DocTools_FOUND)
-    kdoctools_install(po)
+  kdoctools_install(po)
 endif()
 
 install(FILES completions/dolphin.zsh RENAME _dolphin DESTINATION ${KDE_INSTALL_ZSHAUTOCOMPLETEDIR})
