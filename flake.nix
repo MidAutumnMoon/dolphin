@@ -9,6 +9,12 @@
         system = "x86_64-linux";
         pkgs = nixpkgs.legacyPackages.${system};
 
+        # Dev tools
+        devTools = with pkgs; [
+            clang-tools # clangd + clang-format
+            neocmakelsp
+        ];
+
         # KDE Plasma 6 / kdePackages development dependencies
         buildDeps = with pkgs; [
             # Build system
@@ -105,7 +111,7 @@
         devShells.${system}.default = pkgs.mkShell {
             name = "dolphin-dev";
 
-            packages = buildDeps ++ runtimeDeps ++ [ dolphin-install-script ];
+            packages = buildDeps ++ runtimeDeps ++ devTools ++ [ dolphin-install-script ];
 
             # Qt plugin paths — SVG engine, icon engines, platform plugins, etc.
             QT_PLUGIN_PATH =
