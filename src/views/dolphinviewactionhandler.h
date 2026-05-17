@@ -32,12 +32,10 @@ class ActionTextHelper;
  * but the view that it acts upon can be switched to another one
  * (this is used in the case of split views).
  *
- * The purpose of this class is also to share this code between DolphinMainWindow
- * and DolphinPart.
+ * The purpose of this class is also to share action logic across Dolphin.
  *
  * @see DolphinView
  * @see DolphinMainWindow
- * @see DolphinPart
  */
 class DOLPHIN_EXPORT DolphinViewActionHandler : public QObject
 {
@@ -82,14 +80,14 @@ Q_SIGNALS:
 
     /**
      * Emitted if the user requested creating a new directory by the F10 key.
-     * The receiver of the signal (DolphinMainWindow or DolphinPart) invokes
+     * The receiver of the signal (DolphinMainWindow) invokes
      * the method createDirectory of their KNewFileMenu instance.
      */
     void createDirectoryTriggered();
 
     /**
      * Emitted if the user requested creating a new file.
-     * The receiver of the signal (DolphinMainWindow or DolphinPart) invokes
+     * The receiver of the signal (DolphinMainWindow) invokes
      * the method createFile of their KNewFileMenu instance.
      */
     void createFileTriggered();

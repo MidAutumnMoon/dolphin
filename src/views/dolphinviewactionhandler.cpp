@@ -146,7 +146,7 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
     connect(duplicateAction, &QAction::triggered, this, &DolphinViewActionHandler::slotDuplicate);
 
     QAction *propertiesAction = m_actionCollection->addAction(QStringLiteral("properties"));
-    // Well, it's the File menu in dolphinmainwindow and the Edit menu in dolphinpart... :)
+    // It's in the File menu in DolphinMainWindow.
     propertiesAction->setText(i18nc("@action:inmenu File", "Properties"));
     propertiesAction->setWhatsThis(xi18nc("@info:whatsthis properties",
                                           "This shows a complete list of properties of the currently "

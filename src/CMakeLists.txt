@@ -55,7 +55,7 @@ install(FILES ${dolphinvcs_LIB_HEADERS} DESTINATION "${KDE_INSTALL_INCLUDEDIR}/D
 add_library(dolphinprivate SHARED)
 
 if(NOT QT_NO_ACCESSIBILITY)
-    target_sources(dolphinprivate PRIVATE
+  target_sources(dolphinprivate PRIVATE
         kitemviews/accessibility/kitemlistcontaineraccessible.cpp
         kitemviews/accessibility/kitemlistdelegateaccessible.cpp
         kitemviews/accessibility/kitemlistviewaccessible.cpp
@@ -186,7 +186,7 @@ ecm_qt_declare_logging_category(dolphinprivate
 )
 
 if(HAVE_BALOO)
-    target_sources(dolphinprivate PRIVATE
+  target_sources(dolphinprivate PRIVATE
         views/tooltips/dolphinfilemetadatawidget.cpp
         views/tooltips/tooltipmanager.cpp
         kitemviews/private/kbaloorolesprovider.cpp
@@ -238,7 +238,7 @@ target_link_libraries(
 )
 
 if(HAVE_BALOO)
-    target_link_libraries(
+  target_link_libraries(
         dolphinprivate PUBLIC
         KF6::Baloo
         KF6::BalooWidgets
@@ -252,29 +252,6 @@ set_target_properties(dolphinprivate PROPERTIES
 
 install(TARGETS dolphinprivate ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dolphin_export.h DESTINATION ${KDE_INSTALL_INCLUDEDIR} COMPONENT Devel)
-
-##########################################
-configure_file(dolphinpart.json.in ${CMAKE_CURRENT_BINARY_DIR}/dolphinpart.json @ONLY)
-
-add_library(dolphinpart MODULE)
-
-target_sources(dolphinpart PRIVATE
-    dolphinpart.cpp
-    dolphinpart_ext.cpp
-    dolphindebug.cpp
-    dolphinpart.h
-    dolphinpart_ext.h
-    dolphindebug.h
-
-    dolphinpart.qrc
-)
-
-target_link_libraries(dolphinpart
-    dolphinprivate
-)
-
-install(TARGETS dolphinpart DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf6/parts)
-install(FILES dolphinpartactions.desktop DESTINATION "${KDE_INSTALL_DATADIR}/dolphin/")
 
 ##########################################
 
@@ -421,7 +398,7 @@ target_sources(dolphinstatic PRIVATE
 )
 
 if(HAVE_BALOO)
-    target_sources(dolphinstatic PRIVATE
+  target_sources(dolphinstatic PRIVATE
         panels/information/informationpanel.cpp
         panels/information/informationpanelcontent.cpp
         panels/information/pixmapviewer.cpp
@@ -434,18 +411,18 @@ if(HAVE_BALOO)
         settings/interface/panelsettingspage.h
     )
 
-    kconfig_add_kcfg_files(dolphinstatic
+  kconfig_add_kcfg_files(dolphinstatic
         panels/information/dolphin_informationpanelsettings.kcfgc
     )
 
-    target_link_libraries(dolphinstatic
+  target_link_libraries(dolphinstatic
         Qt::Multimedia
         Qt::MultimediaWidgets
     )
 endif()
 
 if(HAVE_KUSERFEEDBACK)
-    target_sources(dolphinstatic PRIVATE
+  target_sources(dolphinstatic PRIVATE
         userfeedback/dolphinfeedbackprovider.cpp
         userfeedback/settingsdatasource.cpp
         userfeedback/placesdatasource.cpp
@@ -458,7 +435,7 @@ if(HAVE_KUSERFEEDBACK)
 endif()
 
 if(KF6KIO_VERSION VERSION_GREATER_EQUAL "6.24.0")
-    target_sources(dolphinstatic PRIVATE
+  target_sources(dolphinstatic PRIVATE
         servicemenushortcutmanager.cpp
         servicemenushortcutmanager.h
     )
@@ -490,14 +467,14 @@ target_link_libraries(dolphinstatic
 )
 
 if(HAVE_PACKAGEKIT)
-    target_link_libraries(
+  target_link_libraries(
         dolphinstatic
         PK::packagekitqt6
     )
 endif()
 
 if (HAVE_KUSERFEEDBACK)
-    target_link_libraries(
+  target_link_libraries(
         dolphinstatic
         KF6::UserFeedbackCore
         KF6::UserFeedbackWidgets
@@ -533,7 +510,7 @@ target_link_libraries(dolphin
 )
 
 if (HAVE_X11)
-    target_link_libraries(dolphin PRIVATE Qt::GuiPrivate)
+  target_link_libraries(dolphin PRIVATE Qt::GuiPrivate)
 endif()
 
 include(DbusInterfaceMacros)
@@ -550,12 +527,12 @@ install(TARGETS dolphin ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 ##########################################
 
 if(NOT WIN32)
-    # The settings are still accessible from the hamburger menu
-    add_library(kcm_dolphinviewmodes MODULE)
-    add_library(kcm_dolphingeneral MODULE)
-    target_compile_definitions(kcm_dolphingeneral PUBLIC IS_KCM)
+  # The settings are still accessible from the hamburger menu
+  add_library(kcm_dolphinviewmodes MODULE)
+  add_library(kcm_dolphingeneral MODULE)
+  target_compile_definitions(kcm_dolphingeneral PUBLIC IS_KCM)
 
-    target_sources(kcm_dolphinviewmodes PRIVATE
+  target_sources(kcm_dolphinviewmodes PRIVATE
         settings/kcm/kcmdolphinviewmodes.cpp
         settings/viewmodes/dolphinfontrequester.cpp
         settings/viewmodes/viewmodesettings.cpp
@@ -568,7 +545,7 @@ if(NOT WIN32)
         settings/viewmodes/viewsettingstab.h
         views/zoomlevelinfo.h)
 
-    target_sources(kcm_dolphingeneral PRIVATE
+  target_sources(kcm_dolphingeneral PRIVATE
         settings/kcm/kcmdolphingeneral.cpp
         settings/interface/folderstabssettingspage.cpp
         settings/interface/statusandlocationbarssettingspage.cpp
@@ -597,18 +574,18 @@ if(NOT WIN32)
         global.h
     )
 
-    target_link_libraries(kcm_dolphinviewmodes dolphinprivate)
-    target_link_libraries(kcm_dolphingeneral dolphinprivate)
+  target_link_libraries(kcm_dolphinviewmodes dolphinprivate)
+  target_link_libraries(kcm_dolphingeneral dolphinprivate)
 
-    install( FILES org.kde.dolphin.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR} )
+  install( FILES org.kde.dolphin.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR} )
 
-    install(TARGETS kcm_dolphinviewmodes DESTINATION ${KDE_INSTALL_PLUGINDIR}/dolphin/kcms )
-    install(TARGETS kcm_dolphingeneral DESTINATION ${KDE_INSTALL_PLUGINDIR}/dolphin/kcms )
+  install(TARGETS kcm_dolphinviewmodes DESTINATION ${KDE_INSTALL_PLUGINDIR}/dolphin/kcms )
+  install(TARGETS kcm_dolphingeneral DESTINATION ${KDE_INSTALL_PLUGINDIR}/dolphin/kcms )
 endif()
 
 if(NOT WIN32)
-    add_subdirectory(settings/contextmenu/servicemenuinstaller)
-    install( FILES settings/contextmenu/servicemenu.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR} )
+  add_subdirectory(settings/contextmenu/servicemenuinstaller)
+  install( FILES settings/contextmenu/servicemenu.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR} )
 endif()
 
 ########### install files ###############
@@ -664,7 +641,7 @@ install(
 )
 
 if(BUILD_TESTING)
-    add_subdirectory(tests)
+  add_subdirectory(tests)
 endif()
 
 add_subdirectory(itemactions)
