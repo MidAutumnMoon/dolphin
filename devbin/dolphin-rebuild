@@ -1,3 +1,0 @@
-#!/bin/sh
-set -e
-cmake --build build -j"$(nproc)" && dolphin-install && exec "${DOLPHIN_DEV_PREFIX:-$PWD/install}/bin/dolphin" "$@"

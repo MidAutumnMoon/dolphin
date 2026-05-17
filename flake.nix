@@ -103,15 +103,11 @@
             kdePackages.kiconthemes
         ];
 
-        # dolphin-install script
-        dolphin-install-script =
-            pkgs.writeScriptBin "dolphin-install"
-            (builtins.readFile ./devbin/dolphin-install);
     in {
         devShells.${system}.default = pkgs.mkShell {
             name = "dolphin-dev";
 
-            packages = buildDeps ++ runtimeDeps ++ devTools ++ [ dolphin-install-script ];
+            packages = buildDeps ++ runtimeDeps ++ devTools;
 
             # Qt plugin paths — SVG engine, icon engines, platform plugins, etc.
             QT_PLUGIN_PATH =
@@ -155,11 +151,8 @@
                 export XDG_DATA_DIRS="$PWD/install/share:''${_XDG_DATA_DIRS_STATIC}''${XDG_DATA_DIRS:+:}''${XDG_DATA_DIRS}"
 
                 echo "🐬 Dolphin dev shell ready"
-                echo "   dolphin-configure  # cmake -G Ninja -B build -DCMAKE_INSTALL_PREFIX=... ."
-                echo "   dolphin-build      # incremental build"
-                echo "   dolphin-install    # install to $PWD/install"
-                echo "   dolphin-run        # run the installed binary"
-                echo "   dolphin-rebuild    # build + install + run (your daily driver)"
+                echo "   .configure  # cmake -G Ninja -B build ... (first time)"
+                echo "   .run        # build + install + run (daily driver)"
             '';
         };
     };

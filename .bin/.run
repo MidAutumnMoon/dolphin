@@ -1,0 +1,73 @@
+#!/bin/sh
+set -e
+
+BUILD=1
+INSTALL=1
+RUN=1
+
+for arg in "$@"; do
+  case "$arg" in
+    --build-only)   RUN=0 ;;
+    --install-only) BUILD=0; RUN=0 ;;
+    --no-build)     BUILD=0 ;;
+    --no-run)       RUN=0 ;;
+    --) shift; break ;;
+    -*) echo "usage: .run [--build-only|--install-only|--no-build|--no-run]" >&2; exit 1 ;;
+    *) break ;;
+  esac
+  shift
+done
+
+if [ "$BUILD" = 1 ]; then
+  cmake --build build -j"$(nproc)"
+fi
+
+if [ "$INSTALL" = 1 ]; then
+  PREFIX="${DOLPHIN_DEV_PREFIX:-$PWD/install}"
+  cmake --install build
+
+  ICONS="$PREFIX/share/icons"
+  THEMES="$PREFIX/share/themes"
+
+  # --- Symlink breeze and breeze-dark icon themes ---
+  mkdir -p "$ICONS"
+  ln -sfT "@breezeIcons@/share/icons/breeze" "$ICONS/breeze" 2>/dev/null || true
+  ln -sfT "@breezeIcons@/share/icons/breeze-dark" "$ICONS/breeze-dark" 2>/dev/null || true
+
+  # --- Symlink breeze widget theme ---
+  mkdir -p "$THEMES"
+  ln -sfT "@breeze@/share/themes/breeze" "$THEMES/breeze" 2>/dev/null || true
+
+  # --- Fix hicolor: cmake creates a partial hicolor/ without index.theme ---
+  HICOLOR_SYS="@hicolorIconTheme@/share/icons/hicolor"
+  HICOLOR_LOCAL="$ICONS/hicolor"
+
+  if [ -d "$HICOLOR_SYS" ]; then
+    if [ ! -f "$HICOLOR_LOCAL/index.theme" ]; then
+      cp "$HICOLOR_SYS/index.theme" "$HICOLOR_LOCAL/index.theme"
+    fi
+    for dir in "$HICOLOR_SYS"/*/; do
+      name=$(basename "$dir")
+      if [ ! -e "$HICOLOR_LOCAL/$name" ]; then
+        ln -sfT "$dir" "$HICOLOR_LOCAL/$name" 2>/dev/null || true
+      fi
+    done
+  fi
+
+  # --- Update icon caches ---
+  if [ -d "$ICONS/hicolor" ]; then
+    gtk-update-icon-cache -f "$ICONS/hicolor" 2>/dev/null || true
+  fi
+  if [ -d "$ICONS/breeze" ]; then
+    gtk-update-icon-cache -f "$ICONS/breeze" 2>/dev/null || true
+  fi
+
+  # --- Rebuild KDE service database ---
+  if command -v kbuildsycoca6 >/dev/null 2>&1; then
+    KDE_FULL_SESSION=true kbuildsycoca6 2>/dev/null || true
+  fi
+fi
+
+if [ "$RUN" = 1 ]; then
+  exec "${DOLPHIN_DEV_PREFIX:-$PWD/install}/bin/dolphin" "$@"
+fi

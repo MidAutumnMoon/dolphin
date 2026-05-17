@@ -1,3 +1,0 @@
-#!/bin/sh
-set -e
-exec "${DOLPHIN_DEV_PREFIX:-$PWD/install}/bin/dolphin" "$@"
