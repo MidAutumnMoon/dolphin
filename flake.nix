@@ -1,162 +1,160 @@
 {
-  description = "Dolphin file manager development environment";
+    description = "Dolphin file manager development environment";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  };
+    inputs = {
+        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    };
 
-  outputs =
-    { self, nixpkgs }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+    outputs = { self, nixpkgs }: let
+        system = "x86_64-linux";
+        pkgs = nixpkgs.legacyPackages.${system};
 
-      # KDE Plasma 6 / kdePackages development dependencies
-      buildDeps = with pkgs; [
-        # Build system
-        cmake
-        kdePackages.extra-cmake-modules
-        pkg-config
-        ninja
+        # KDE Plasma 6 / kdePackages development dependencies
+        buildDeps = with pkgs; [
+            # Build system
+            cmake
+            kdePackages.extra-cmake-modules
+            pkg-config
+            ninja
 
-        # Qt6
-        qt6.qtbase
-        qt6.qttools # for Qt6::LinguistTools (optional but useful)
-        qt6.qtmultimedia # for Baloo info panel
-        qt6.qtwayland # Wayland support
-        qt6.qtsvg # SVG icon rendering — REQUIRED for breeze icons
-        qt6.wrapQtAppsHook
-
-        # kdePackages core frameworks (matching root CMakeLists.txt)
-        kdePackages.kcoreaddons
-        kdePackages.ki18n
-        kdePackages.kconfig
-        kdePackages.kdbusaddons
-        kdePackages.kio # pulls in KIOCore, KIOWidgets, KIOFileWidgets
-        kdePackages.kcmutils
-        kdePackages.knewstuff
-        kdePackages.kparts
-        kdePackages.solid
-        kdePackages.kiconthemes
-        kdePackages.kcompletion
-        kdePackages.ktextwidgets
-        kdePackages.knotifications
-        kdePackages.kcrash
-        kdePackages.kwindowsystem
-        kdePackages.kwidgetsaddons
-        kdePackages.kcodecs
-        kdePackages.kguiaddons
-        kdePackages.kcolorscheme
-        kdePackages.kbookmarks
-        kdePackages.kfilemetadata
-        kdePackages.baloo
-        kdePackages.baloo-widgets
-
-        # Optional but nice
-        kdePackages.kdoctools # doc generation
-        kdePackages.kuserfeedback # telemetry (optional)
-
-        # Misc
-        kdePackages.packagekit-qt # service menu installer (optional)
-      ];
-
-      runtimeDeps = with pkgs; [
-        # Things needed at runtime in the devshell
-        kdePackages.konsole # terminal panel embedding
-        kdePackages.kio # KIO slaves (sftp, smb, trash, etc.)
-        kdePackages.kio-extras # additional protocol handlers
-
-        # Icon/theme support on non-KDE WMs (niri, sway, etc.)
-        kdePackages.breeze # Qt/GTK widget theme
-        kdePackages.breeze-icons # KDE app icons (including Dolphin's)
-        kdePackages.oxygen-icons # fallback icon theme
-        hicolor-icon-theme # base icon theme spec + index.theme
-        gtk3 # provides gtk-update-icon-cache
-      ];
-
-      # All packages whose share/ should be in XDG_DATA_DIRS
-      # This is what wrapQtAppsHook does for installed NixOS apps
-      xdgDataPackages = with pkgs; [
-        kdePackages.breeze
-        kdePackages.breeze-icons
-        kdePackages.oxygen-icons
-        hicolor-icon-theme
-        kdePackages.kiconthemes
-        kdePackages.kio
-        kdePackages.kio-extras
-        kdePackages.kfilemetadata
-        kdePackages.baloo
-        kdePackages.baloo-widgets
-        kdePackages.kcoreaddons
-      ];
-
-      # All packages whose lib/qt-6/plugins/ should be in QT_PLUGIN_PATH
-      qtPluginPackages = with pkgs; [
-        qt6.qtbase
-        qt6.qtsvg
-        qt6.qtmultimedia
-        qt6.qtwayland
-        kdePackages.kiconthemes
-      ];
-
-      # dolphin-install script
-      dolphin-install-script = pkgs.writeScriptBin "dolphin-install" (builtins.readFile ./devbin/dolphin-install);
-    in
-    {
-      devShells.${system}.default = pkgs.mkShell {
-        name = "dolphin-dev";
-
-        packages = buildDeps ++ runtimeDeps ++ [ dolphin-install-script ];
-
-        # Qt plugin paths — SVG engine, icon engines, platform plugins, etc.
-        QT_PLUGIN_PATH = pkgs.lib.makeSearchPath "lib/qt-6/plugins" qtPluginPackages;
-
-        QML2_IMPORT_PATH = pkgs.lib.makeSearchPath "lib/qt-6/qml" [ pkgs.qt6.qtbase ];
-
-        # Static XDG data dirs from Nix store paths (evaluated at build time)
-        _XDG_DATA_DIRS_STATIC = pkgs.lib.concatStringsSep ":" (
-          map (p: "${p}/share") xdgDataPackages
-        );
-
-        # Make CMake able to find kdePackages/Qt6 configs
-        CMAKE_PREFIX_PATH = pkgs.lib.concatStringsSep ";" (
-          with pkgs;
-          [
+            # Qt6
             qt6.qtbase
-            qt6.qtmultimedia
+            qt6.qttools # for Qt6::LinguistTools (optional but useful)
+            qt6.qtmultimedia # for Baloo info panel
+            qt6.qtwayland # Wayland support
+            qt6.qtsvg # SVG icon rendering — REQUIRED for breeze icons
+            qt6.wrapQtAppsHook
+
+            # kdePackages core frameworks (matching root CMakeLists.txt)
             kdePackages.kcoreaddons
-            kdePackages.kio
+            kdePackages.ki18n
+            kdePackages.kconfig
+            kdePackages.kdbusaddons
+            kdePackages.kio # pulls in KIOCore, KIOWidgets, KIOFileWidgets
             kdePackages.kcmutils
+            kdePackages.knewstuff
             kdePackages.kparts
             kdePackages.solid
-            kdePackages.baloo
-            kdePackages.baloo-widgets
-            kdePackages.kfilemetadata
-            kdePackages.kbookmarks
+            kdePackages.kiconthemes
+            kdePackages.kcompletion
+            kdePackages.ktextwidgets
             kdePackages.knotifications
             kdePackages.kcrash
-            kdePackages.extra-cmake-modules
-          ]
-        );
+            kdePackages.kwindowsystem
+            kdePackages.kwidgetsaddons
+            kdePackages.kcodecs
+            kdePackages.kguiaddons
+            kdePackages.kcolorscheme
+            kdePackages.kbookmarks
+            kdePackages.kfilemetadata
+            kdePackages.baloo
+            kdePackages.baloo-widgets
 
-        shellHook = ''
-          # Shell-agnostic helper scripts (works in bash, fish, zsh...)
-          export PATH="$PWD/.bin''${PATH:+:}''${PATH}"
+            # Optional but nice
+            kdePackages.kdoctools # doc generation
+            kdePackages.kuserfeedback # telemetry (optional)
 
-          # Local install prefix
-          export DOLPHIN_DEV_PREFIX="$PWD/install"
+            # Misc
+            kdePackages.packagekit-qt # service menu installer (optional)
+        ];
 
-          # XDG data dirs — icon themes, .desktop files, mime types, etc.
-          # Local install prefix first, then Nix store paths, then system defaults
-          export XDG_DATA_DIRS="$PWD/install/share:''${_XDG_DATA_DIRS_STATIC}''${XDG_DATA_DIRS:+:}''${XDG_DATA_DIRS}"
+        runtimeDeps = with pkgs; [
+            # Things needed at runtime in the devshell
+            kdePackages.konsole # terminal panel embedding
+            kdePackages.kio # KIO slaves (sftp, smb, trash, etc.)
+            kdePackages.kio-extras # additional protocol handlers
 
-          echo "🐬 Dolphin dev shell ready"
-          echo "   dolphin-configure  # cmake -G Ninja -B build -DCMAKE_INSTALL_PREFIX=... ."
-          echo "   dolphin-build      # incremental build"
-          echo "   dolphin-install    # install to $PWD/install"
-          echo "   dolphin-run        # run the installed binary"
-          echo "   dolphin-rebuild    # build + install + run (your daily driver)"
-        '';
-      };
+            # Icon/theme support on non-KDE WMs (niri, sway, etc.)
+            kdePackages.breeze # Qt/GTK widget theme
+            kdePackages.breeze-icons # KDE app icons (including Dolphin's)
+            kdePackages.oxygen-icons # fallback icon theme
+            hicolor-icon-theme # base icon theme spec + index.theme
+            gtk3 # provides gtk-update-icon-cache
+        ];
+
+        # All packages whose share/ should be in XDG_DATA_DIRS
+        # This is what wrapQtAppsHook does for installed NixOS apps
+        xdgDataPackages = with pkgs; [
+            kdePackages.breeze
+            kdePackages.breeze-icons
+            kdePackages.oxygen-icons
+            hicolor-icon-theme
+            kdePackages.kiconthemes
+            kdePackages.kio
+            kdePackages.kio-extras
+            kdePackages.kfilemetadata
+            kdePackages.baloo
+            kdePackages.baloo-widgets
+            kdePackages.kcoreaddons
+        ];
+
+        # All packages whose lib/qt-6/plugins/ should be in QT_PLUGIN_PATH
+        qtPluginPackages = with pkgs; [
+            qt6.qtbase
+            qt6.qtsvg
+            qt6.qtmultimedia
+            qt6.qtwayland
+            kdePackages.kiconthemes
+        ];
+
+        # dolphin-install script
+        dolphin-install-script =
+            pkgs.writeScriptBin "dolphin-install"
+            (builtins.readFile ./devbin/dolphin-install);
+    in {
+        devShells.${system}.default = pkgs.mkShell {
+            name = "dolphin-dev";
+
+            packages = buildDeps ++ runtimeDeps ++ [ dolphin-install-script ];
+
+            # Qt plugin paths — SVG engine, icon engines, platform plugins, etc.
+            QT_PLUGIN_PATH =
+                pkgs.lib.makeSearchPath "lib/qt-6/plugins" qtPluginPackages;
+
+            QML2_IMPORT_PATH =
+                pkgs.lib.makeSearchPath "lib/qt-6/qml" [ pkgs.qt6.qtbase ];
+
+            # Static XDG data dirs from Nix store paths (evaluated at build time)
+            _XDG_DATA_DIRS_STATIC = pkgs.lib.concatStringsSep ":" (
+                map (p: "${p}/share") xdgDataPackages
+            );
+
+            # Make CMake able to find kdePackages/Qt6 configs
+            CMAKE_PREFIX_PATH = pkgs.lib.concatStringsSep ";" (with pkgs; [
+                qt6.qtbase
+                qt6.qtmultimedia
+                kdePackages.kcoreaddons
+                kdePackages.kio
+                kdePackages.kcmutils
+                kdePackages.kparts
+                kdePackages.solid
+                kdePackages.baloo
+                kdePackages.baloo-widgets
+                kdePackages.kfilemetadata
+                kdePackages.kbookmarks
+                kdePackages.knotifications
+                kdePackages.kcrash
+                kdePackages.extra-cmake-modules
+            ]);
+
+            shellHook = ''
+                # Shell-agnostic helper scripts (works in bash, fish, zsh...)
+                export PATH="$PWD/.bin''${PATH:+:}''${PATH}"
+
+                # Local install prefix
+                export DOLPHIN_DEV_PREFIX="$PWD/install"
+
+                # XDG data dirs — icon themes, .desktop files, mime types, etc.
+                # Local install prefix first, then Nix store paths, then system defaults
+                export XDG_DATA_DIRS="$PWD/install/share:''${_XDG_DATA_DIRS_STATIC}''${XDG_DATA_DIRS:+:}''${XDG_DATA_DIRS}"
+
+                echo "🐬 Dolphin dev shell ready"
+                echo "   dolphin-configure  # cmake -G Ninja -B build -DCMAKE_INSTALL_PREFIX=... ."
+                echo "   dolphin-build      # incremental build"
+                echo "   dolphin-install    # install to $PWD/install"
+                echo "   dolphin-run        # run the installed binary"
+                echo "   dolphin-rebuild    # build + install + run (your daily driver)"
+            '';
+        };
     };
 }
