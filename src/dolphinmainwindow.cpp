@@ -37,7 +37,6 @@
 #include "views/dolphinremoteencoding.h"
 #include "views/dolphinviewactionhandler.h"
 #include "views/draganddrophelper.h"
-#include "views/viewproperties.h"
 
 #include <KActionCollection>
 #include <KActionMenu>
@@ -211,8 +210,7 @@ DolphinMainWindow::DolphinMainWindow()
 #endif
     setupFileItemActions();
 
-    const bool usePhoneUi{KRuntimePlatform::runtimePlatform().contains(QLatin1String("phone"))};
-    setupGUI(Save | Create | ToolBar, usePhoneUi ? QStringLiteral("dolphinuiforphones.rc") : QString() /* load the default dolphinui.rc file */);
+    setupGUI(Save | Create | ToolBar, QString());
     stateChanged(QStringLiteral("new_file"));
 
     QClipboard *clipboard = QApplication::clipboard();
@@ -223,15 +221,6 @@ DolphinMainWindow::DolphinMainWindow()
 
     if (firstRun) {
         menuBar()->setVisible(false);
-
-        if (usePhoneUi) {
-            Q_ASSERT(qobject_cast<QDockWidget *>(m_placesPanel->parent()));
-            m_placesPanel->parentWidget()->hide();
-            auto settings = GeneralSettings::self();
-            settings->setShowZoomSlider(false); // Zooming can be done with pinch gestures instead and we are short on horizontal space.
-            settings->setRenameInline(false); // This works around inline renaming currently not working well with virtual keyboards.
-            settings->save(); // Otherwise the RenameInline setting is not picked up for the first time Dolphin is used.
-        }
     }
 
     QAction *showMenuBarAction = actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar));

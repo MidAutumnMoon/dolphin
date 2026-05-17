@@ -118,6 +118,9 @@ Cpp11BracedListStyle: true
 # do not put a space before C++11 braced lists
 SpaceBeforeCpp11BracedList: false
 
+# Put closing } of braced init list on its own line when the list wraps.
+BreakBeforeCloseBracketBracedList: true
+
 # remove empty lines
 KeepEmptyLinesAtTheStartOfBlocks: false
 
