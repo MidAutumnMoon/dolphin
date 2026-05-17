@@ -57,7 +57,6 @@
             kdePackages.baloo-widgets
 
             # Optional but nice
-            kdePackages.kdoctools # doc generation
             kdePackages.kuserfeedback # telemetry (optional)
 
             # Misc

@@ -99,10 +99,6 @@ if(KF6UserFeedback_FOUND)
   set(HAVE_KUSERFEEDBACK TRUE)
 endif()
 
-find_package(KF6 ${KF6_MIN_VERSION} OPTIONAL_COMPONENTS
-    DocTools
-)
-
 find_package(PackageKitQt6)
 set_package_properties(PackageKitQt6
         PROPERTIES DESCRIPTION "Software Manager integration"
@@ -168,7 +164,6 @@ else()
 endif()
 
 add_subdirectory(src)
-add_subdirectory(doc)
 add_subdirectory(appiumtests)
 
 # CMake files
@@ -215,9 +210,6 @@ ecm_qt_install_logging_categories(
         )
 
 ki18n_install(po)
-if(KF6DocTools_FOUND)
-  kdoctools_install(po)
-endif()
 
 install(FILES completions/dolphin.zsh RENAME _dolphin DESTINATION ${KDE_INSTALL_ZSHAUTOCOMPLETEDIR})
 
