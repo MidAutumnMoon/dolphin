@@ -12,6 +12,7 @@ This is a personal fork of KDE Dolphin file manager, tuned to my own habits.
 - Prefer `.cc`/`.hh` extensions for new C++ files, not `.cpp`/`.h`.
 - Existing files follow KDE convention: `DolphinRemoveAction` → `dolphinremoveaction.cpp`. For new files, use snake_case: `dolphin_remove_action.cc`. No tooling enforces this — just rename the file and update CMakeLists.
 - Prefer functions over methods. If it doesn't need `this`, make it a free function in a namespace (anonymous namespace if only one call site). Qt forces OOP at the framework boundary — let it — but go functional in the middle.
+- When making a user-visible change, add an entry to the **Fork Changes** section in `README.md`. Describe what changed, not how — no implementation details.
 
 ## What changes look like here
 
