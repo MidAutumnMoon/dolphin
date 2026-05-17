@@ -11,7 +11,7 @@
 #include "dolphin_contentdisplaysettings.h"
 #include "dolphin_detailsmodesettings.h"
 #include "dolphin_generalsettings.h"
-#include "dolphin_iconsmodesettings.h"
+
 #include "dolphindebug.h"
 #include "dolphinplacesmodelsingleton.h"
 #include "filterbar/filterbar.h"

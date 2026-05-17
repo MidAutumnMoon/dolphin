@@ -9,7 +9,7 @@
 #include "dolphin_contentdisplaysettings.h"
 #include "dolphin_detailsmodesettings.h"
 #include "dolphin_generalsettings.h"
-#include "dolphin_iconsmodesettings.h"
+
 #include "dolphinfileitemlistwidget.h"
 #include "settings/viewmodes/viewmodesettings.h"
 #include "zoomlevelinfo.h"
@@ -92,7 +92,6 @@ void DolphinItemListView::setEnabledSelectionToggles(DolphinItemListView::Select
 void DolphinItemListView::readSettings()
 {
     // We load the settings for all view modes now because we don't load them when the view mode changes.
-    IconsModeSettings::self()->load();
     DetailsModeSettings::self()->load();
 
     ContentDisplaySettings::self()->load();
@@ -113,7 +112,6 @@ void DolphinItemListView::readSettings()
 
 void DolphinItemListView::writeSettings()
 {
-    IconsModeSettings::self()->save();
     DetailsModeSettings::self()->save();
 }
 
@@ -192,26 +190,6 @@ void DolphinItemListView::updateGridSize()
     int maxTextWidth = 0;
 
     switch (itemLayout()) {
-    case KFileItemListView::IconsLayout: {
-        // an exponential factor based on zoom, 0 -> 1, 4 -> 1.36 8 -> ~1.85, 16 -> 3.4
-        auto zoomFactor = qExp(m_zoomLevel / 13.0);
-        // 9 is the average char width for 10pt Noto Sans, making fontFactor =1
-        // by each pixel the font gets larger the factor increases by 1/9
-        auto fontFactor = option.fontMetrics.averageCharWidth() / 9.0;
-        itemWidth = 16 + IconsModeSettings::textWidthIndex() * 64 * fontFactor * zoomFactor;
-
-        if (itemWidth < iconSize + padding * 2 * zoomFactor) {
-            itemWidth = iconSize + padding * 2 * zoomFactor;
-        }
-
-        itemHeight = padding * 3 + iconSize + option.fontMetrics.lineSpacing();
-
-        const auto margin = style()->pixelMetric(QStyle::PM_SizeGripSize);
-        horizontalMargin = margin;
-        verticalMargin = margin;
-        maxTextLines = IconsModeSettings::maximumTextLines();
-        break;
-    }
     case KFileItemListView::DetailsLayout: {
         itemWidth = -1;
         itemHeight = padding * 2 + qMax(iconSize, option.fontMetrics.lineSpacing());

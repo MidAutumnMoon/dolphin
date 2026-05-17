@@ -258,12 +258,6 @@ private:
     QActionGroup *createFileItemRolesActionGroup(const QString &groupPrefix);
 
     /**
-     * Returns the "switch to icons mode" action.
-     * Helper method for createActions();
-     */
-    KToggleAction *iconsModeAction();
-
-    /**
      * Returns the "switch to details mode" action.
      * Helper method for createActions();
      */

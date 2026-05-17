@@ -8,7 +8,6 @@
 #include "viewmodesettings.h"
 
 #include "dolphin_detailsmodesettings.h"
-#include "dolphin_iconsmodesettings.h"
 
 #include "dolphin_generalsettings.h"
 
@@ -23,7 +22,7 @@ ViewModeSettings::ViewModeSettings()
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     // Migrate old config entries
     if (GeneralSettings::version() < 202) {
-        for (const QString &groupName : {QStringLiteral("CompactMode"), QStringLiteral("DetailsMode"), QStringLiteral("IconsMode")}) {
+        for (const QString &groupName : {QStringLiteral("CompactMode"), QStringLiteral("DetailsMode")}) {
             KConfigGroup group = config->group(groupName);
             const QString family = group.readEntry("FontFamily", QString{});
             if (family.isEmpty()) {
@@ -49,143 +48,75 @@ ViewModeSettings::ViewModeSettings()
 ViewModeSettings::ViewModeSettings(DolphinView::Mode mode)
     : ViewModeSettings()
 {
-    switch (mode) {
-    case DolphinView::IconsView:
-        m_viewModeSettingsVariant = IconsModeSettings::self();
-        return;
-    case DolphinView::DetailsView:
-        m_viewModeSettingsVariant = DetailsModeSettings::self();
-        return;
-    default:
-        Q_UNREACHABLE();
-    }
+    Q_UNUSED(mode)
+    m_viewModeSettingsVariant = DetailsModeSettings::self();
 }
 
 ViewModeSettings::ViewModeSettings(ViewSettingsTab::Mode mode)
     : ViewModeSettings()
 {
-    switch (mode) {
-    case ViewSettingsTab::IconsMode:
-        m_viewModeSettingsVariant = IconsModeSettings::self();
-        return;
-    case ViewSettingsTab::DetailsMode:
-        m_viewModeSettingsVariant = DetailsModeSettings::self();
-        return;
-    default:
-        Q_UNREACHABLE();
-    }
+    Q_UNUSED(mode)
+    m_viewModeSettingsVariant = DetailsModeSettings::self();
 }
 
 ViewModeSettings::ViewModeSettings(KStandardItemListView::ItemLayout itemLayout)
     : ViewModeSettings()
 {
-    switch (itemLayout) {
-    case KStandardItemListView::IconsLayout:
-        m_viewModeSettingsVariant = IconsModeSettings::self();
-        return;
-    case KStandardItemListView::DetailsLayout:
-        m_viewModeSettingsVariant = DetailsModeSettings::self();
-        return;
-    default:
-        Q_UNREACHABLE();
-    }
+    Q_UNUSED(itemLayout)
+    m_viewModeSettingsVariant = DetailsModeSettings::self();
 }
 
 void ViewModeSettings::setIconSize(int iconSize)
 {
-    std::visit(
-        [iconSize](auto &&v) {
-            v->setIconSize(iconSize);
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->setIconSize(iconSize);
 }
 
 int ViewModeSettings::iconSize() const
 {
-    return std::visit(
-        [](auto &&v) {
-            return v->iconSize();
-        },
-        m_viewModeSettingsVariant);
+    return m_viewModeSettingsVariant->iconSize();
 }
 
 void ViewModeSettings::setPreviewSize(int previewSize)
 {
-    std::visit(
-        [previewSize](auto &&v) {
-            v->setPreviewSize(previewSize);
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->setPreviewSize(previewSize);
 }
 
 int ViewModeSettings::previewSize() const
 {
-    return std::visit(
-        [](auto &&v) {
-            return v->previewSize();
-        },
-        m_viewModeSettingsVariant);
+    return m_viewModeSettingsVariant->previewSize();
 }
 
 void ViewModeSettings::setUseSystemFont(bool useSystemFont)
 {
-    std::visit(
-        [useSystemFont](auto &&v) {
-            v->setUseSystemFont(useSystemFont);
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->setUseSystemFont(useSystemFont);
 }
 
 bool ViewModeSettings::useSystemFont() const
 {
-    return std::visit(
-        [](auto &&v) {
-            return v->useSystemFont();
-        },
-        m_viewModeSettingsVariant);
+    return m_viewModeSettingsVariant->useSystemFont();
 }
 
 void ViewModeSettings::setViewFont(const QFont &font)
 {
-    std::visit(
-        [&font](auto &&v) {
-            v->setViewFont(font);
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->setViewFont(font);
 }
 
 QFont ViewModeSettings::viewFont() const
 {
-    return std::visit(
-        [](auto &&v) {
-            return v->viewFont();
-        },
-        m_viewModeSettingsVariant);
+    return m_viewModeSettingsVariant->viewFont();
 }
 
 void ViewModeSettings::useDefaults(bool useDefaults)
 {
-    std::visit(
-        [useDefaults](auto &&v) {
-            v->useDefaults(useDefaults);
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->useDefaults(useDefaults);
 }
 
 void ViewModeSettings::readConfig()
 {
-    std::visit(
-        [](auto &&v) {
-            v->load();
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->load();
 }
 
 void ViewModeSettings::save()
 {
-    std::visit(
-        [](auto &&v) {
-            return v->save();
-        },
-        m_viewModeSettingsVariant);
+    m_viewModeSettingsVariant->save();
 }

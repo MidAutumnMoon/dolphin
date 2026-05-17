@@ -24,7 +24,7 @@
         <entry name="ViewMode" type="Int" >
             <label context="@label">View Mode</label>
             <whatsthis context="@info:whatsthis">This option controls the style of the view. Currently supported values include icons (0) and details (2) views.</whatsthis>
-            <default code="true">DolphinView::IconsView</default>
+            <default code="true">DolphinView::DetailsView</default>
         </entry>
 
         <entry name="ZoomLevel" type="Int" >
@@ -83,10 +83,7 @@
             <whatsthis context="@info:whatsthis">The last time these properties were changed by the user.</whatsthis>
         </entry>
 
-        <entry name="DynamicViewPassed" type="Bool">
-            <label context="@label">View mode changed once by dynamic view</label>
-            <default>false</default>
-        </entry>
+
 
         <!-- Obsolete - replaced by VisibleRoles -->
         <entry name="AdditionalInfo" type="StringList">

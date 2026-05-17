@@ -111,8 +111,6 @@ bool ContextMenuSettingsPage::entryVisible(const QString &id)
         return ContextMenuSettings::showAddToPlaces();
     } else if (id == "sort") {
         return ContextMenuSettings::showSortBy();
-    } else if (id == "view_mode") {
-        return ContextMenuSettings::showViewMode();
     } else if (id == "open_in_new_tab") {
         return ContextMenuSettings::showOpenInNewTab();
     } else if (id == "open_in_new_window") {
@@ -139,8 +137,6 @@ void ContextMenuSettingsPage::setEntryVisible(const QString &id, bool visible)
         ContextMenuSettings::setShowAddToPlaces(visible);
     } else if (id == "sort") {
         ContextMenuSettings::setShowSortBy(visible);
-    } else if (id == "view_mode") {
-        ContextMenuSettings::setShowViewMode(visible);
     } else if (id == "open_in_new_tab") {
         ContextMenuSettings::setShowOpenInNewTab(visible);
     } else if (id == "open_in_new_window") {

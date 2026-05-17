@@ -11,14 +11,10 @@
 #include "views/dolphinview.h"
 #include "viewsettingstab.h"
 
-#include <variant>
-
 class DetailsModeSettings;
-class IconsModeSettings;
 
 /**
- * @short Helper class for accessing similar properties of IconsModeSettings
- *        and DetailsModeSettings.
+ * @short Helper class for accessing similar properties of DetailsModeSettings.
  */
 class ViewModeSettings
 {
@@ -47,7 +43,7 @@ public:
 private:
     explicit ViewModeSettings();
 
-    std::variant<IconsModeSettings *, DetailsModeSettings *> m_viewModeSettingsVariant;
+    DetailsModeSettings *m_viewModeSettingsVariant;
 };
 
 #endif

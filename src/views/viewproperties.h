@@ -69,8 +69,7 @@ public:
     void setSortHiddenLast(bool hiddenLast);
     bool sortHiddenLast() const;
 
-    void setDynamicViewPassed(bool dynamicViewPassed);
-    bool dynamicViewPassed() const;
+
 
     /**
      * Sets the additional information for the current set view-mode.

@@ -198,14 +198,14 @@ ViewProperties::ViewProperties(const QUrl &url)
             const QString path = url.path();
 
             if (path == QLatin1String("/images")) {
-                setViewMode(DolphinView::IconsView);
+                setViewMode(DolphinView::DetailsView);
                 setPreviewsShown(true);
                 setVisibleRoles({"text", "dimensions", "imageDateTime"});
             } else if (path == QLatin1String("/audio")) {
                 setViewMode(DolphinView::DetailsView);
                 setVisibleRoles({"text", "artist", "album", "duration"});
             } else if (path == QLatin1String("/videos")) {
-                setViewMode(DolphinView::IconsView);
+                setViewMode(DolphinView::DetailsView);
                 setPreviewsShown(true);
                 setVisibleRoles({"text"});
             } else {
@@ -398,18 +398,7 @@ bool ViewProperties::sortHiddenLast() const
     return m_node->sortHiddenLast();
 }
 
-void ViewProperties::setDynamicViewPassed(bool dynamicViewPassed)
-{
-    if (m_node->dynamicViewPassed() != dynamicViewPassed) {
-        m_node->setDynamicViewPassed(dynamicViewPassed);
-        update();
-    }
-}
 
-bool ViewProperties::dynamicViewPassed() const
-{
-    return m_node->dynamicViewPassed();
-}
 
 void ViewProperties::setVisibleRoles(const QList<QByteArray> &roles)
 {
@@ -669,9 +658,6 @@ QString ViewProperties::viewModePrefix() const
     QString prefix;
 
     switch (m_node->viewMode()) {
-    case DolphinView::IconsView:
-        prefix = QStringLiteral("Icons_");
-        break;
     case DolphinView::DetailsView:
         prefix = QStringLiteral("Details_");
         break;

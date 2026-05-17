@@ -195,16 +195,8 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
                                       // actions in slotSelectionChanged() after the static ones above.
 
     // View menu
-    KToggleAction *iconsAction = iconsModeAction();
     KToggleAction *detailsAction = detailsModeAction();
 
-    iconsAction->setWhatsThis(xi18nc("@info:whatsthis Icons view mode",
-                                     "<para>This switches to a view mode that focuses on the folder "
-                                     "and file icons. This mode makes it easy to distinguish folders "
-                                     "from files and to detect items with distinctive <emphasis>"
-                                     "file types</emphasis>.</para><para> This mode is handy to "
-                                     "browse through pictures when the <interface>Preview"
-                                     "</interface> option is enabled.</para>"));
     detailsAction->setWhatsThis(xi18nc("@info:whatsthis Details view mode",
                                        "<para>This switches to a list view mode that focuses on folder "
                                        "and file details.</para><para>Click on a detail in the column "
@@ -214,24 +206,6 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
                                        "view the contents of a folder without leaving the current "
                                        "location by clicking the region to the left of it. This way you can "
                                        "view the contents of multiple folders in the same list.</para>"));
-
-    KSelectAction *viewModeActions = m_actionCollection->add<KSelectAction>(QStringLiteral("view_mode"));
-    viewModeActions->setText(i18nc("@action:intoolbar", "Change View Mode"));
-    viewModeActions->setWhatsThis(xi18nc("@info:whatsthis View Mode Toolbutton", "This cycles through all view modes."));
-    viewModeActions->addAction(iconsAction);
-    viewModeActions->addAction(detailsAction);
-    viewModeActions->setToolBarMode(KSelectAction::MenuMode);
-    viewModeActions->setToolButtonPopupMode(QToolButton::ToolButtonPopupMode::MenuButtonPopup);
-    connect(viewModeActions, &KSelectAction::actionTriggered, this, &DolphinViewActionHandler::slotViewModeActionTriggered);
-    connect(viewModeActions, &KSelectAction::triggered, this, [this, viewModeActions, iconsAction, detailsAction]() {
-        // Loop through the actions when button is clicked
-        const auto currentAction = viewModeActions->currentAction();
-        if (currentAction == iconsAction) {
-            slotViewModeActionTriggered(detailsAction);
-        } else if (currentAction == detailsAction) {
-            slotViewModeActionTriggered(iconsAction);
-        }
-    });
 
     QAction *zoomInAction = KStandardAction::zoomIn(this, &DolphinViewActionHandler::zoomIn, m_actionCollection);
     zoomInAction->setWhatsThis(i18nc("@info:whatsthis zoom in", "This increases the icon size."));
@@ -354,11 +328,8 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
     KActionMenu *viewSettings = m_actionCollection->add<KActionMenu>(QStringLiteral("view_settings"));
     viewSettings->setText(i18nc("@action:intoolbar", "View Settings"));
     viewSettings->setWhatsThis(
-        xi18nc("@info:whatsthis View Settings Toolbutton", "This cycles through all view modes. The dropdown menu contains various view-related actions."));
-    const auto actions = viewModeActions->actions();
-    for (QAction *action : actions) {
-        viewSettings->addAction(action);
-    }
+        xi18nc("@info:whatsthis View Settings Toolbutton", "The dropdown menu contains various view-related actions."));
+    viewSettings->addAction(detailsAction);
     viewSettings->addSeparator();
     viewSettings->addAction(zoomWidgetAction);
     viewSettings->addAction(sortByActionMenu);
@@ -368,7 +339,6 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
     viewSettings->addAction(showHiddenFiles);
     viewSettings->addAction(adjustViewProps);
     viewSettings->setPopupMode(QToolButton::ToolButtonPopupMode::MenuButtonPopup);
-    connect(viewSettings, &KActionMenu::triggered, viewModeActions, &KSelectAction::triggered);
     // HACK KActionMenu doesn't set a parent for its menu() causing accessibility traversal issues
     viewSettings->menu()->setParent(QApplication::activeWindow());
 }
@@ -451,12 +421,6 @@ void DolphinViewActionHandler::slotViewModeActionTriggered(QAction *action)
 {
     const DolphinView::Mode mode = action->data().value<DolphinView::Mode>();
     m_currentView->setViewMode(mode);
-
-    QAction *viewModeMenu = m_actionCollection->action(QStringLiteral("view_mode"));
-    viewModeMenu->setIcon(action->icon());
-
-    QAction *viewSettingsAction = m_actionCollection->action(QStringLiteral("view_settings"));
-    viewSettingsAction->setIcon(action->icon());
 }
 
 void DolphinViewActionHandler::slotRename()
@@ -508,16 +472,7 @@ void DolphinViewActionHandler::slotPreviewsShownChanged(bool shown)
 
 QString DolphinViewActionHandler::currentViewModeActionName() const
 {
-    switch (m_currentView->viewMode()) {
-    case DolphinView::IconsView:
-        return QStringLiteral("icons");
-    case DolphinView::DetailsView:
-        return QStringLiteral("details");
-    default:
-        Q_ASSERT(false);
-        break;
-    }
-    return QString(); // can't happen
+    return QStringLiteral("details");
 }
 
 KActionCollection *DolphinViewActionHandler::actionCollection()
@@ -530,12 +485,6 @@ void DolphinViewActionHandler::updateViewActions()
     QAction *viewModeAction = m_actionCollection->action(currentViewModeActionName());
     if (viewModeAction) {
         viewModeAction->setChecked(true);
-
-        QAction *viewModeMenu = m_actionCollection->action(QStringLiteral("view_mode"));
-        viewModeMenu->setIcon(viewModeAction->icon());
-
-        QAction *viewSettingsAction = m_actionCollection->action(QStringLiteral("view_settings"));
-        viewSettingsAction->setIcon(viewModeAction->icon());
     }
 
     QAction *showPreviewAction = m_actionCollection->action(QStringLiteral("show_preview"));
@@ -670,17 +619,6 @@ void DolphinViewActionHandler::slotWriteStateChanged(bool isFolderWritable)
     const bool supportsMakeDir = KProtocolManager::supportsMakeDir(currentView()->url());
     m_actionCollection->action(QStringLiteral("create_dir"))->setEnabled(isFolderWritable && supportsMakeDir);
     m_actionCollection->action(QStringLiteral("create_file"))->setEnabled(isFolderWritable);
-}
-
-KToggleAction *DolphinViewActionHandler::iconsModeAction()
-{
-    KToggleAction *iconsView = m_actionCollection->add<KToggleAction>(QStringLiteral("icons"));
-    iconsView->setText(i18nc("@action:inmenu View Mode", "Icons"));
-    iconsView->setToolTip(i18nc("@info", "Icons view mode"));
-    m_actionCollection->setDefaultShortcut(iconsView, Qt::CTRL | Qt::Key_1);
-    iconsView->setIcon(QIcon::fromTheme(QStringLiteral("view-list-icons")));
-    iconsView->setData(QVariant::fromValue(DolphinView::IconsView));
-    return iconsView;
 }
 
 KToggleAction *DolphinViewActionHandler::detailsModeAction()

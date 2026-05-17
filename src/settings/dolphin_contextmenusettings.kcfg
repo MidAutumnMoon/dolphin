@@ -18,10 +18,7 @@
             <label>Show 'Sort By' in context menu.</label>
             <default>true</default>
         </entry>
-        <entry name="ShowViewMode" type="Bool">
-            <label>Show 'View Mode' in context menu.</label>
-            <default>true</default>
-        </entry>
+
         <entry name="ShowOpenInNewTab" type="Bool">
             <label>Show 'Open in New Tab' and 'Open in New Tabs' in context menu.</label>
             <default>true</default>

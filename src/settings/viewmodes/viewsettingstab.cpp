@@ -7,7 +7,6 @@
 #include "viewsettingstab.h"
 
 #include "dolphin_detailsmodesettings.h"
-#include "dolphin_iconsmodesettings.h"
 #include "dolphinfontrequester.h"
 #include "global.h"
 #include "settings/viewmodes/viewmodesettings.h"
@@ -76,24 +75,6 @@ ViewSettingsTab::ViewSettingsTab(Mode mode, QWidget *parent)
     m_fontWarningLabel->setPalette(palette);
 
     switch (m_mode) {
-    case IconsMode: {
-        m_widthBox = new QComboBox();
-        m_widthBox->addItem(i18nc("@item:inlistbox Label width", "Small"));
-        m_widthBox->addItem(i18nc("@item:inlistbox Label width", "Medium"));
-        m_widthBox->addItem(i18nc("@item:inlistbox Label width", "Large"));
-        m_widthBox->addItem(i18nc("@item:inlistbox Label width", "Huge"));
-        topLayout->addRow(i18nc("@label:listbox", "Label width:"), m_widthBox);
-
-        m_maxLinesBox = new QComboBox();
-        m_maxLinesBox->addItem(i18nc("@item:inlistbox Maximum lines", "Unlimited"));
-        m_maxLinesBox->addItem(i18nc("@item:inlistbox Maximum lines", "1"));
-        m_maxLinesBox->addItem(i18nc("@item:inlistbox Maximum lines", "2"));
-        m_maxLinesBox->addItem(i18nc("@item:inlistbox Maximum lines", "3"));
-        m_maxLinesBox->addItem(i18nc("@item:inlistbox Maximum lines", "4"));
-        m_maxLinesBox->addItem(i18nc("@item:inlistbox Maximum lines", "5"));
-        topLayout->addRow(i18nc("@label:listbox", "Maximum lines:"), m_maxLinesBox);
-        break;
-    }
     case DetailsMode:
         m_expandableFolders = new QCheckBox(i18nc("@option:check", "Expandable"));
         topLayout->addRow(i18nc("@label:checkbox", "Folders:"), m_expandableFolders);
@@ -122,15 +103,9 @@ ViewSettingsTab::ViewSettingsTab(Mode mode, QWidget *parent)
     connect(m_fontRequester, &DolphinFontRequester::changed, this, &ViewSettingsTab::checkFontStyle);
 
     switch (m_mode) {
-    case IconsMode:
-        connect(m_widthBox, &QComboBox::currentIndexChanged, this, &ViewSettingsTab::changed);
-        connect(m_maxLinesBox, &QComboBox::currentIndexChanged, this, &ViewSettingsTab::changed);
-        break;
     case DetailsMode:
         connect(m_entireRow, &QCheckBox::toggled, this, &ViewSettingsTab::changed);
         connect(m_expandableFolders, &QCheckBox::toggled, this, &ViewSettingsTab::changed);
-        break;
-    default:
         break;
     }
 }
@@ -157,11 +132,6 @@ void ViewSettingsTab::checkFontStyle()
 void ViewSettingsTab::applySettings()
 {
     switch (m_mode) {
-    case IconsMode:
-        IconsModeSettings::setTextWidthIndex(m_widthBox->currentIndex());
-        IconsModeSettings::setMaximumTextLines(m_maxLinesBox->currentIndex());
-        IconsModeSettings::self()->save();
-        break;
     case DetailsMode:
         auto detailsModeSettings = DetailsModeSettings::self();
         // We need side-padding when the full row is a click target to still be able to not click items.
@@ -215,16 +185,10 @@ void ViewSettingsTab::restoreDefaults()
 void ViewSettingsTab::loadSettings()
 {
     switch (m_mode) {
-    case IconsMode:
-        m_widthBox->setCurrentIndex(IconsModeSettings::textWidthIndex());
-        m_maxLinesBox->setCurrentIndex(IconsModeSettings::maximumTextLines());
-        break;
     case DetailsMode:
         m_entireRow->setChecked(DetailsModeSettings::highlightEntireRow());
         m_iconAndNameOnly->setChecked(!m_entireRow->isChecked());
         m_expandableFolders->setChecked(DetailsModeSettings::expandableFolders());
-        break;
-    default:
         break;
     }
 

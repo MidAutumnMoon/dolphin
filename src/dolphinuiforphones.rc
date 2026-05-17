@@ -41,7 +41,6 @@
             <Action name="view_zoom_out"/>
             <Separator/>
             <Action name="sort" />
-            <Action name="view_mode" />
             <Action name="additional_info" />
             <Action name="show_preview" />
             <Action name="show_in_groups" />
@@ -123,9 +122,6 @@
         <Action priority="0" name="go_up"/>
         <Action priority="0" name="go_home"/>
         <Action priority="0" name="stop"/>
-        <Action priority="0" name="icons"/>
-        <Action priority="0" name="details"/>
-        <Action priority="0" name="view_mode" />
         <Action priority="0" name="view_settings" />
         <Action priority="0" name="view_zoom_in"/>
         <Action priority="0" name="view_zoom_reset"/>

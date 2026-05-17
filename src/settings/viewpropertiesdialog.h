@@ -41,7 +41,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void slotApply();
-    void slotViewModeChanged(int index);
+
     void slotSortingChanged(int index);
     void slotSortOrderChanged(int index);
     void slotGroupedSortingChanged();
@@ -64,7 +64,7 @@ private:
     DolphinView *m_dolphinView;
     ViewProperties *m_viewProps;
 
-    QComboBox *m_viewMode;
+
     QComboBox *m_sortOrder;
     QComboBox *m_sorting;
     QCheckBox *m_sortFoldersFirst;

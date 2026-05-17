@@ -86,7 +86,7 @@ DolphinView::DolphinView(const QUrl &url, QWidget *parent)
     , m_selectNextItem(false)
     , m_url(url)
     , m_viewPropertiesContext()
-    , m_mode(DolphinView::IconsView)
+    , m_mode(DolphinView::DetailsView)
     , m_visibleRoles()
     , m_topLayout(nullptr)
     , m_model(nullptr)
@@ -2007,8 +2007,6 @@ void DolphinView::hideToolTip(const ToolTipManager::HideBehavior behavior)
 #else
         Q_UNUSED(behavior)
 #endif
-    } else if (m_mode == DolphinView::IconsView) {
-        QToolTip::hideText();
     }
 }
 
@@ -2116,8 +2114,6 @@ void DolphinView::slotDirectoryLoadingCompleted()
     // Update the view-state. This has to be done asynchronously
     // because the view might not be in its final state yet.
     QTimer::singleShot(0, this, &DolphinView::updateViewState);
-
-    applyDynamicView();
 
     // Update the placeholder label in case we found that the folder was empty
     // after loading it
@@ -2463,83 +2459,15 @@ void DolphinView::updateDefaultZoomLevel()
 void DolphinView::applyModeToView()
 {
     switch (m_mode) {
-    case IconsView:
-        m_view->setItemLayout(KFileItemListView::IconsLayout);
-        break;
     case DetailsView:
         m_view->setItemLayout(KFileItemListView::DetailsLayout);
+        m_view->setHighlightEntireRow(DetailsModeSettings::highlightEntireRow());
+        m_view->setSupportsItemExpanding(DetailsModeSettings::expandableFolders());
         break;
     default:
         Q_ASSERT(false);
         break;
     }
-}
-
-void DolphinView::applyDynamicView()
-{
-    /* return early if:
-     * - dynamic view is not enabled
-     * - the current view mode is already Icon View
-     * - dynamic view has previously changed the view mode
-     */
-    if (!GeneralSettings::dynamicView() || m_mode == IconsView) {
-        return;
-    }
-
-    ViewProperties props(viewPropertiesUrl());
-    if (props.dynamicViewPassed()) {
-        return;
-    }
-
-    uint imageAndVideoCount = 0;
-    uint checkedItems = 0;
-    uint checkedItemDir = 0;
-    constexpr float folderWeight = 1.00/3;
-    const uint totalItems = itemsCount();
-    const KFileItemList itemList = items();
-    bool applyDynamicView = false;
-
-    // If any of the files are expanded, we do not want to interrupt
-    // the user workflow with dynamic changes
-    for (const auto &item : itemList) {
-        if (item.isDir() && isExpanded(item)) {
-            return;
-        }
-    }
-
-    for (const auto &file : itemList) {
-        if (file.isFile()) {
-            ++checkedItems;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-            const QString type = file.mimetype().slice(0, 5);
-#else
-            const QString type = file.mimetype().sliced(0, 5);
-#endif
-
-            if (type == "image" || type == "video") {
-                ++imageAndVideoCount;
-                // if 2/3 or more of the items are images/videos, dynamic view should be applied
-                applyDynamicView = imageAndVideoCount >= ((totalItems - (checkedItemDir * (1 - folderWeight))) * 2 / 3);
-                if (applyDynamicView) {
-                    break;
-                }
-            } else if (checkedItems - imageAndVideoCount > (totalItems - (checkedItemDir * (1 - folderWeight))) / 3) {
-                // if more than a third of the checked files are not media files, return
-                return;
-            }
-        } else {
-            ++checkedItemDir;
-        }
-    }
-
-    if (!applyDynamicView) {
-        return;
-    }
-
-    props.setAutoSaveEnabled(!GeneralSettings::globalViewProps());
-    props.setDynamicViewPassed(true);
-    props.setViewMode(IconsView);
-    applyViewProperties(props);
 }
 
 void DolphinView::pasteToUrl(const QUrl &url)
@@ -2764,24 +2692,7 @@ void DolphinView::updatePlaceholderLabel()
 
 bool DolphinView::tryShowNameToolTip(QHelpEvent *event)
 {
-    if (!GeneralSettings::showToolTips() && m_mode == DolphinView::IconsView) {
-        const std::optional<int> index = m_view->itemAt(event->pos());
-
-        if (!index.has_value()) {
-            return false;
-        }
-
-        // Check whether the filename has been elided
-        const bool isElided = m_view->isElided(index.value());
-
-        if (isElided) {
-            const KFileItem item = m_model->fileItem(index.value());
-            const QString text = item.text();
-            const QPoint pos = mapToGlobal(event->pos());
-            QToolTip::showText(pos, text, this);
-            return true;
-        }
-    }
+    Q_UNUSED(event)
     return false;
 }
 

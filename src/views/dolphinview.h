@@ -65,11 +65,6 @@ public:
      */
     enum Mode {
         /**
-         * The items are shown as icons with a name-label below.
-         */
-        IconsView = 0,
-
-        /**
          * The icon, the name and the size of the items are
          * shown per default as a table.
          */
@@ -544,8 +539,8 @@ Q_SIGNALS:
     void windowRequested(const QUrl &url);
 
     /**
-     * Is emitted if the view mode (IconsView, DetailsView,
-     * PreviewsView) has been changed.
+     * Is emitted if the view mode (DetailsView)
+     * has been changed.
      */
     void modeChanged(DolphinView::Mode current, DolphinView::Mode previous);
 
@@ -912,11 +907,6 @@ private:
      * itemlayout-property of the KItemListView.
      */
     void applyModeToView();
-
-    /**
-     * Changes the current view based on the content of the directory.
-     */
-    void applyDynamicView();
 
     enum Selection { HasSelection, NoSelection };
     /**

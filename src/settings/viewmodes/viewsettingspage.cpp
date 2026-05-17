@@ -38,11 +38,6 @@ ViewSettingsPage::ViewSettingsPage(const QUrl &url, QWidget *parent)
                       i18nc("@title:tab how file items columns are displayed", "Content Display"));
     connect(contentDisplayTab, &SettingsPageBase::changed, this, &ViewSettingsPage::changed);
 
-    // Initialize 'Icons' tab
-    ViewSettingsTab *iconsTab = new ViewSettingsTab(ViewSettingsTab::IconsMode, tabWidget);
-    tabWidget->addTab(iconsTab, QIcon::fromTheme(QStringLiteral("view-list-icons")), i18nc("@title:tab", "Icons"));
-    connect(iconsTab, &ViewSettingsTab::changed, this, &ViewSettingsPage::changed);
-
     // Initialize 'Details' tab
     ViewSettingsTab *detailsTab = new ViewSettingsTab(ViewSettingsTab::DetailsMode, tabWidget);
     tabWidget->addTab(detailsTab, QIcon::fromTheme(QStringLiteral("view-list-tree")), i18nc("@title:tab", "Details"));
@@ -50,7 +45,6 @@ ViewSettingsPage::ViewSettingsPage(const QUrl &url, QWidget *parent)
 
     m_tabs.append(generalViewPage);
     m_tabs.append(contentDisplayTab);
-    m_tabs.append(iconsTab);
     m_tabs.append(detailsTab);
 
     topLayout->addWidget(tabWidget, 0);

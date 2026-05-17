@@ -40,7 +40,7 @@ ViewPropertiesDialog::ViewPropertiesDialog(DolphinView *dolphinView)
     , m_isDirty(false)
     , m_dolphinView(dolphinView)
     , m_viewProps(nullptr)
-    , m_viewMode(nullptr)
+
     , m_sortOrder(nullptr)
     , m_sorting(nullptr)
     , m_sortFoldersFirst(nullptr)
@@ -67,9 +67,7 @@ ViewPropertiesDialog::ViewPropertiesDialog(DolphinView *dolphinView)
     layout->setSizeConstraint(QLayout::SetFixedSize);
 
     // create 'Properties' group containing view mode, sorting, sort order and show hidden files
-    m_viewMode = new QComboBox();
-    m_viewMode->addItem(QIcon::fromTheme(QStringLiteral("view-list-icons")), i18nc("@item:inlistbox", "Icons"), DolphinView::IconsView);
-    m_viewMode->addItem(QIcon::fromTheme(QStringLiteral("view-list-tree")), i18nc("@item:inlistbox", "Details"), DolphinView::DetailsView);
+
 
     m_sortOrder = new QComboBox();
     m_sortOrder->addItem(i18nc("@item:inlistbox Sort", "Ascending"));
@@ -137,7 +135,7 @@ ViewPropertiesDialog::ViewPropertiesDialog(DolphinView *dolphinView)
     sortingLayout->addWidget(m_sortOrder);
     sortingLayout->addWidget(m_sorting);
 
-    layout->addRow(i18nc("@label:listbox", "View mode:"), m_viewMode);
+
     layout->addRow(i18nc("@label:listbox", "Sorting:"), sortingLayout);
 
     layout->addItem(new QSpacerItem(0, Dolphin::VERTICAL_SPACER_HEIGHT, QSizePolicy::Fixed, QSizePolicy::Fixed));
@@ -148,7 +146,7 @@ ViewPropertiesDialog::ViewPropertiesDialog(DolphinView *dolphinView)
     layout->addRow(QString(), m_showHiddenFiles);
     layout->addRow(QString(), m_sortHiddenLast);
 
-    connect(m_viewMode, &QComboBox::currentIndexChanged, this, &ViewPropertiesDialog::slotViewModeChanged);
+
     connect(m_sorting, &QComboBox::currentIndexChanged, this, &ViewPropertiesDialog::slotSortingChanged);
     connect(m_sortOrder, &QComboBox::currentIndexChanged, this, &ViewPropertiesDialog::slotSortOrderChanged);
     connect(m_sortFoldersFirst, &QCheckBox::clicked, this, &ViewPropertiesDialog::slotSortFoldersFirstChanged);
@@ -232,13 +230,7 @@ void ViewPropertiesDialog::slotApply()
     markAsDirty(false);
 }
 
-void ViewPropertiesDialog::slotViewModeChanged(int index)
-{
-    const QVariant itemData = m_viewMode->itemData(index);
-    const DolphinView::Mode viewMode = static_cast<DolphinView::Mode>(itemData.toInt());
-    m_viewProps->setViewMode(viewMode);
-    markAsDirty(true);
-}
+
 
 void ViewPropertiesDialog::slotSortingChanged(int index)
 {
@@ -386,18 +378,6 @@ void ViewPropertiesDialog::applyViewProperties()
 
 void ViewPropertiesDialog::loadSettings()
 {
-    // Load view mode
-    switch (m_viewProps->viewMode()) {
-    case DolphinView::IconsView:
-        m_viewMode->setCurrentIndex(0);
-        break;
-    case DolphinView::DetailsView:
-        m_viewMode->setCurrentIndex(1);
-        break;
-    default:
-        break;
-    }
-
     // Load sort order and sorting
     const int sortOrderIndex = (m_viewProps->sortOrder() == Qt::AscendingOrder) ? 0 : 1;
     m_sortOrder->setCurrentIndex(sortOrderIndex);

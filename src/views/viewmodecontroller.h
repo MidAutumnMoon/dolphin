@@ -17,8 +17,7 @@
  * @brief Allows the DolphinView to control the view implementations for the
  *        different view modes.
  *
- * The view implementations (DolphinIconsView, DolphinDetailsView, DolphinColumnView)
- * connect to signals of the ViewModeController to react on changes. The view
+ * The view implementations connect to signals of the ViewModeController to react on changes. The view
  * implementations get only read-access to the ViewModeController.
  */
 class DOLPHIN_EXPORT ViewModeController : public QObject

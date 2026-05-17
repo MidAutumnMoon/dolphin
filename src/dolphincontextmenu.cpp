@@ -121,15 +121,12 @@ bool DolphinContextMenu::eventFilter(QObject *object, QEvent *event)
 
 void DolphinContextMenu::addTrashContextMenu()
 {
-    // Insert 'Sort By' and 'View Mode'
+    // Insert 'Sort By'
     if (ContextMenuSettings::showSortBy()) {
         addAction(m_mainWindow->actionCollection()->action(QStringLiteral("sort")));
     }
-    if (ContextMenuSettings::showViewMode()) {
-        addAction(m_mainWindow->actionCollection()->action(QStringLiteral("view_mode")));
-    }
 
-    if (ContextMenuSettings::showSortBy() || ContextMenuSettings::showViewMode()) {
+    if (ContextMenuSettings::showSortBy()) {
         addSeparator();
     }
 
@@ -363,14 +360,11 @@ void DolphinContextMenu::addViewportContextMenu()
     }
     addSeparator();
 
-    // Insert 'Sort By' and 'View Mode'
+    // Insert 'Sort By'
     if (ContextMenuSettings::showSortBy()) {
         addAction(m_mainWindow->actionCollection()->action(QStringLiteral("sort")));
     }
-    if (ContextMenuSettings::showViewMode()) {
-        addAction(m_mainWindow->actionCollection()->action(QStringLiteral("view_mode")));
-    }
-    if (ContextMenuSettings::showSortBy() || ContextMenuSettings::showViewMode()) {
+    if (ContextMenuSettings::showSortBy()) {
         addSeparator();
     }
 
