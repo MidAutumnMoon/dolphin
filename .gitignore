@@ -30,3 +30,4 @@ doxygen.log
 
 .direnv/
 /install/
+__cmake_*/

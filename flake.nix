@@ -100,7 +100,7 @@
         ];
 
     in {
-        devShells.${system}.default = pkgs.mkShell {
+        devShells.${system}.default = pkgs.mkShellNoCC {
             name = "dolphin-dev";
 
             packages = buildDeps ++ runtimeDeps ++ devTools;
