@@ -31,3 +31,4 @@ doxygen.log
 .cmake/
 
 .direnv/
+/install/

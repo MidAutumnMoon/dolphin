@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+PREFIX="${DOLPHIN_DEV_PREFIX:-$PWD/install}"
+cmake --install build
+
+# Update icon caches for the local install prefix only
+# (Nix store icon themes have their own pre-built caches)
+if [ -d "$PREFIX/share/icons/hicolor" ]; then
+  gtk-update-icon-cache -f "$PREFIX/share/icons/hicolor" 2>/dev/null || true
+fi
+
+# Rebuild KDE service database so .desktop files are found
+if command -v kbuildsycoca6 >/dev/null 2>&1; then
+  KDE_FULL_SESSION=true kbuildsycoca6 2>/dev/null || true
+fi
