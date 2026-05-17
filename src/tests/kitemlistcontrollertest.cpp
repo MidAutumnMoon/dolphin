@@ -244,8 +244,6 @@ void KItemListControllerTest::testKeyboardNavigationMultiSelection_data()
     QHash<KFileItemListView::ItemLayout, QString> layoutNames;
     layoutList.append(KFileItemListView::IconsLayout);
     layoutNames[KFileItemListView::IconsLayout] = "Icons";
-    layoutList.append(KFileItemListView::CompactLayout);
-    layoutNames[KFileItemListView::CompactLayout] = "Compact";
     layoutList.append(KFileItemListView::DetailsLayout);
     layoutNames[KFileItemListView::DetailsLayout] = "Details";
 
@@ -268,8 +266,6 @@ void KItemListControllerTest::testKeyboardNavigationMultiSelection_data()
 
     for (const KFileItemListView::ItemLayout &layout : layoutList) {
         // The following settings depend on the layout.
-        // Note that 'columns' are actually 'rows' in
-        // Compact layout.
         Qt::Orientation scrollOrientation;
         QList<int> columnCountList;
         Qt::Key nextItemKey = Qt::Key_Right;
@@ -286,14 +282,6 @@ void KItemListControllerTest::testKeyboardNavigationMultiSelection_data()
             nextRowKey = Qt::Key_Down;
             previousRowKey = Qt::Key_Up;
             break;
-        case KFileItemListView::CompactLayout:
-            scrollOrientation = Qt::Horizontal;
-            columnCountList << 1 << 3 << 5;
-            nextItemKey = Qt::Key_Down;
-            previousItemKey = Qt::Key_Up;
-            nextRowKey = Qt::Key_Right;
-            previousRowKey = Qt::Key_Left;
-            break;
         case KFileItemListView::DetailsLayout:
             scrollOrientation = Qt::Vertical;
             columnCountList << 1;
@@ -308,9 +296,6 @@ void KItemListControllerTest::testKeyboardNavigationMultiSelection_data()
                 switch (layout) {
                 case KFileItemListView::IconsLayout:
                     std::swap(nextItemKey, previousItemKey);
-                    break;
-                case KFileItemListView::CompactLayout:
-                    std::swap(nextRowKey, previousRowKey);
                     break;
                 default:
                     break;
@@ -674,8 +659,6 @@ void KItemListControllerTest::testKeyboardNavigationSingleSelectionNoSelection_d
     QHash<KFileItemListView::ItemLayout, QString> layoutNames;
     layoutList.append(KFileItemListView::IconsLayout);
     layoutNames[KFileItemListView::IconsLayout] = "Icons";
-    layoutList.append(KFileItemListView::CompactLayout);
-    layoutNames[KFileItemListView::CompactLayout] = "Compact";
     layoutList.append(KFileItemListView::DetailsLayout);
     layoutNames[KFileItemListView::DetailsLayout] = "Details";
 
@@ -705,8 +688,6 @@ void KItemListControllerTest::testKeyboardNavigationSingleSelectionNoSelection_d
 
     for (const KFileItemListView::ItemLayout &layout : layoutList) {
         // The following settings depend on the layout.
-        // Note that 'columns' are actually 'rows' in
-        // Compact layout.
         Qt::Orientation scrollOrientation;
         QList<int> columnCountList;
         Qt::Key nextItemKey = Qt::Key_Right;
@@ -723,14 +704,6 @@ void KItemListControllerTest::testKeyboardNavigationSingleSelectionNoSelection_d
             nextRowKey = Qt::Key_Down;
             previousRowKey = Qt::Key_Up;
             break;
-        case KFileItemListView::CompactLayout:
-            scrollOrientation = Qt::Horizontal;
-            columnCountList << 1 << 3 << 5;
-            nextItemKey = Qt::Key_Down;
-            previousItemKey = Qt::Key_Up;
-            nextRowKey = Qt::Key_Right;
-            previousRowKey = Qt::Key_Left;
-            break;
         case KFileItemListView::DetailsLayout:
             scrollOrientation = Qt::Vertical;
             columnCountList << 1;
@@ -745,9 +718,6 @@ void KItemListControllerTest::testKeyboardNavigationSingleSelectionNoSelection_d
                 switch (layout) {
                 case KFileItemListView::IconsLayout:
                     std::swap(nextItemKey, previousItemKey);
-                    break;
-                case KFileItemListView::CompactLayout:
-                    std::swap(nextRowKey, previousRowKey);
                     break;
                 default:
                     break;

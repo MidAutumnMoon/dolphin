@@ -264,12 +264,6 @@ private:
     KToggleAction *iconsModeAction();
 
     /**
-     * Returns the "switch to compact mode" action.
-     * Helper method for createActions();
-     */
-    KToggleAction *compactModeAction();
-
-    /**
      * Returns the "switch to details mode" action.
      * Helper method for createActions();
      */

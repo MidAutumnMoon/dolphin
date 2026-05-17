@@ -74,7 +74,6 @@ protected:
     virtual QFont customizedFontForLinks(const QFont &baseFont) const;
 
     void calculateIconsLayoutItemSizeHints(QVector<std::pair<qreal, bool>> &logicalHeightHints, qreal &logicalWidthHint, const KItemListView *view) const;
-    void calculateCompactLayoutItemSizeHints(QVector<std::pair<qreal, bool>> &logicalHeightHints, qreal &logicalWidthHint, const KItemListView *view) const;
     void calculateDetailsLayoutItemSizeHints(QVector<std::pair<qreal, bool>> &logicalHeightHints, qreal &logicalWidthHint, const KItemListView *view) const;
 
     friend class KStandardItemListWidget; // Accesses roleText()
@@ -90,7 +89,7 @@ class DOLPHIN_EXPORT KStandardItemListWidget : public KItemListWidget
     Q_OBJECT
 
 public:
-    enum Layout { IconsLayout, CompactLayout, DetailsLayout };
+    enum Layout { IconsLayout, DetailsLayout };
 
     KStandardItemListWidget(KItemListWidgetInformant *informant, QGraphicsItem *parent);
     ~KStandardItemListWidget() override;
@@ -211,7 +210,6 @@ private:
 
     void updateTextsCache();
     void updateIconsLayoutTextCache();
-    void updateCompactLayoutTextCache();
     void updateDetailsLayoutTextCache();
 
     QPixmap addOverlays(const QPixmap &pixmap,

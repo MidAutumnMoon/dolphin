@@ -51,7 +51,7 @@ bool isSearchUrl(const QUrl &url);
  * @short Represents a view for the directory content
  *        including the navigation bar, filter bar and status bar.
  *
- * View modes for icons, compact and details are supported. Currently
+ * View modes for icons and details are supported. Currently
  * Dolphin allows to have up to two views inside the main window.
  *
  * @see DolphinView

@@ -38,7 +38,7 @@ void KStandardItemListView::setItemLayout(ItemLayout layout)
     // keep the leading padding option unchanged here
     setHighlightEntireRow(itemLayoutHighlightEntireRow(layout));
     setSupportsItemExpanding(itemLayoutSupportsItemExpanding(layout));
-    setScrollOrientation(layout == CompactLayout ? Qt::Horizontal : Qt::Vertical);
+    setScrollOrientation(Qt::Vertical);
 
     onItemLayoutChanged(layout, previous);
 
@@ -68,9 +68,6 @@ void KStandardItemListView::initializeItemListWidget(KItemListWidget *item)
     switch (itemLayout()) {
     case IconsLayout:
         standardItemListWidget->setLayout(KStandardItemListWidget::IconsLayout);
-        break;
-    case CompactLayout:
-        standardItemListWidget->setLayout(KStandardItemListWidget::CompactLayout);
         break;
     case DetailsLayout:
         standardItemListWidget->setLayout(KStandardItemListWidget::DetailsLayout);
@@ -146,9 +143,6 @@ void KStandardItemListView::polishEvent()
     switch (m_itemLayout) {
     case IconsLayout:
         applyDefaultStyleOption(style()->pixelMetric(QStyle::PM_LargeIconSize), 2, 4, 8);
-        break;
-    case CompactLayout:
-        applyDefaultStyleOption(style()->pixelMetric(QStyle::PM_SmallIconSize), 2, 8, 0);
         break;
     case DetailsLayout:
         applyDefaultStyleOption(style()->pixelMetric(QStyle::PM_SmallIconSize), 2, 0, 0);

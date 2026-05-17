@@ -11,7 +11,7 @@
 #include "kitemviews/kitemlistview.h"
 
 /**
- * @brief Provides layouts for icons-, compact- and details-view.
+ * @brief Provides layouts for icons- and details-view.
  *
  * Together with the KStandardItemModel lists for standard usecases
  * can be created in a straight forward way.
@@ -31,7 +31,7 @@ class DOLPHIN_EXPORT KStandardItemListView : public KItemListView
     Q_OBJECT
 
 public:
-    enum ItemLayout { IconsLayout, CompactLayout, DetailsLayout };
+    enum ItemLayout { IconsLayout, DetailsLayout };
 
     explicit KStandardItemListView(QGraphicsWidget *parent = nullptr);
     ~KStandardItemListView() override;

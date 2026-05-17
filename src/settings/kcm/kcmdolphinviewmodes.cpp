@@ -38,18 +38,12 @@ DolphinViewModesConfigModule::DolphinViewModesConfigModule(QObject *parent, cons
     tabWidget->addTab(iconsTab, QIcon::fromTheme(QStringLiteral("view-list-icons")), i18nc("@title:tab", "Icons"));
     connect(iconsTab, &ViewSettingsTab::changed, this, &DolphinViewModesConfigModule::viewModeChanged);
 
-    // Initialize 'Compact' tab
-    ViewSettingsTab *compactTab = new ViewSettingsTab(ViewSettingsTab::CompactMode, tabWidget);
-    tabWidget->addTab(compactTab, QIcon::fromTheme(QStringLiteral("view-list-details")), i18nc("@title:tab", "Compact"));
-    connect(compactTab, &ViewSettingsTab::changed, this, &DolphinViewModesConfigModule::viewModeChanged);
-
     // Initialize 'Details' tab
     ViewSettingsTab *detailsTab = new ViewSettingsTab(ViewSettingsTab::DetailsMode, tabWidget);
     tabWidget->addTab(detailsTab, QIcon::fromTheme(QStringLiteral("view-list-tree")), i18nc("@title:tab", "Details"));
     connect(detailsTab, &ViewSettingsTab::changed, this, &DolphinViewModesConfigModule::viewModeChanged);
 
     m_tabs.append(iconsTab);
-    m_tabs.append(compactTab);
     m_tabs.append(detailsTab);
 
     topLayout->addWidget(tabWidget, 0, {});

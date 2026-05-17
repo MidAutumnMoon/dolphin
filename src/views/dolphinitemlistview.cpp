@@ -6,7 +6,6 @@
 
 #include "dolphinitemlistview.h"
 
-#include "dolphin_compactmodesettings.h"
 #include "dolphin_contentdisplaysettings.h"
 #include "dolphin_detailsmodesettings.h"
 #include "dolphin_generalsettings.h"
@@ -94,7 +93,6 @@ void DolphinItemListView::readSettings()
 {
     // We load the settings for all view modes now because we don't load them when the view mode changes.
     IconsModeSettings::self()->load();
-    CompactModeSettings::self()->load();
     DetailsModeSettings::self()->load();
 
     ContentDisplaySettings::self()->load();
@@ -116,7 +114,6 @@ void DolphinItemListView::readSettings()
 void DolphinItemListView::writeSettings()
 {
     IconsModeSettings::self()->save();
-    CompactModeSettings::self()->save();
     DetailsModeSettings::self()->save();
 }
 
@@ -213,20 +210,6 @@ void DolphinItemListView::updateGridSize()
         horizontalMargin = margin;
         verticalMargin = margin;
         maxTextLines = IconsModeSettings::maximumTextLines();
-        break;
-    }
-    case KFileItemListView::CompactLayout: {
-        itemWidth = padding * 4 + iconSize + option.fontMetrics.height() * 5;
-        const int textLinesCount = visibleRoles().count();
-        itemHeight = padding * 2 + qMax(iconSize, textLinesCount * option.fontMetrics.lineSpacing());
-
-        if (CompactModeSettings::maximumTextWidthIndex() > 0) {
-            // A restriction is given for the maximum width of the text (0 means
-            // having no restriction)
-            maxTextWidth = option.fontMetrics.height() * 10 * CompactModeSettings::maximumTextWidthIndex();
-        }
-
-        horizontalMargin = 8;
         break;
     }
     case KFileItemListView::DetailsLayout: {

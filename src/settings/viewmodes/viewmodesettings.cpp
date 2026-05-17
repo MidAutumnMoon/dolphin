@@ -7,7 +7,6 @@
 
 #include "viewmodesettings.h"
 
-#include "dolphin_compactmodesettings.h"
 #include "dolphin_detailsmodesettings.h"
 #include "dolphin_iconsmodesettings.h"
 
@@ -54,9 +53,6 @@ ViewModeSettings::ViewModeSettings(DolphinView::Mode mode)
     case DolphinView::IconsView:
         m_viewModeSettingsVariant = IconsModeSettings::self();
         return;
-    case DolphinView::CompactView:
-        m_viewModeSettingsVariant = CompactModeSettings::self();
-        return;
     case DolphinView::DetailsView:
         m_viewModeSettingsVariant = DetailsModeSettings::self();
         return;
@@ -72,9 +68,6 @@ ViewModeSettings::ViewModeSettings(ViewSettingsTab::Mode mode)
     case ViewSettingsTab::IconsMode:
         m_viewModeSettingsVariant = IconsModeSettings::self();
         return;
-    case ViewSettingsTab::CompactMode:
-        m_viewModeSettingsVariant = CompactModeSettings::self();
-        return;
     case ViewSettingsTab::DetailsMode:
         m_viewModeSettingsVariant = DetailsModeSettings::self();
         return;
@@ -89,9 +82,6 @@ ViewModeSettings::ViewModeSettings(KStandardItemListView::ItemLayout itemLayout)
     switch (itemLayout) {
     case KStandardItemListView::IconsLayout:
         m_viewModeSettingsVariant = IconsModeSettings::self();
-        return;
-    case KStandardItemListView::CompactLayout:
-        m_viewModeSettingsVariant = CompactModeSettings::self();
         return;
     case KStandardItemListView::DetailsLayout:
         m_viewModeSettingsVariant = DetailsModeSettings::self();

@@ -8,7 +8,6 @@
 
 #include "admin/bar.h"
 #include "admin/workerintegration.h"
-#include "dolphin_compactmodesettings.h"
 #include "dolphin_contentdisplaysettings.h"
 #include "dolphin_detailsmodesettings.h"
 #include "dolphin_generalsettings.h"

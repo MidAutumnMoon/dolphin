@@ -149,6 +149,14 @@ private:
      */
 
     void convertDateRoleToModificationTimeRole();
+
+    /**
+     * Provides backward compatibility with .directory files created with
+     * Dolphin before compact view was removed: Converts the old CompactView
+     * mode (1) to DetailsView (2).
+     */
+    void convertCompactViewToDetailsView();
+
     /**
      * Returns true, if \a filePath is part of the home-path (see QDir::homePath()).
      */

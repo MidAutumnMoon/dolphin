@@ -196,7 +196,6 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
 
     // View menu
     KToggleAction *iconsAction = iconsModeAction();
-    KToggleAction *compactAction = compactModeAction();
     KToggleAction *detailsAction = detailsModeAction();
 
     iconsAction->setWhatsThis(xi18nc("@info:whatsthis Icons view mode",
@@ -206,10 +205,6 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
                                      "file types</emphasis>.</para><para> This mode is handy to "
                                      "browse through pictures when the <interface>Preview"
                                      "</interface> option is enabled.</para>"));
-    compactAction->setWhatsThis(xi18nc("@info:whatsthis Compact view mode",
-                                       "<para>This switches to a compact view mode that lists the folders "
-                                       "and files in columns with the names beside the icons.</para><para>"
-                                       "This helps to give you an overview in folders with many items.</para>"));
     detailsAction->setWhatsThis(xi18nc("@info:whatsthis Details view mode",
                                        "<para>This switches to a list view mode that focuses on folder "
                                        "and file details.</para><para>Click on a detail in the column "
@@ -224,17 +219,14 @@ void DolphinViewActionHandler::createActions(SelectionMode::ActionTextHelper *ac
     viewModeActions->setText(i18nc("@action:intoolbar", "Change View Mode"));
     viewModeActions->setWhatsThis(xi18nc("@info:whatsthis View Mode Toolbutton", "This cycles through all view modes."));
     viewModeActions->addAction(iconsAction);
-    viewModeActions->addAction(compactAction);
     viewModeActions->addAction(detailsAction);
     viewModeActions->setToolBarMode(KSelectAction::MenuMode);
     viewModeActions->setToolButtonPopupMode(QToolButton::ToolButtonPopupMode::MenuButtonPopup);
     connect(viewModeActions, &KSelectAction::actionTriggered, this, &DolphinViewActionHandler::slotViewModeActionTriggered);
-    connect(viewModeActions, &KSelectAction::triggered, this, [this, viewModeActions, iconsAction, compactAction, detailsAction]() {
+    connect(viewModeActions, &KSelectAction::triggered, this, [this, viewModeActions, iconsAction, detailsAction]() {
         // Loop through the actions when button is clicked
         const auto currentAction = viewModeActions->currentAction();
         if (currentAction == iconsAction) {
-            slotViewModeActionTriggered(compactAction);
-        } else if (currentAction == compactAction) {
             slotViewModeActionTriggered(detailsAction);
         } else if (currentAction == detailsAction) {
             slotViewModeActionTriggered(iconsAction);
@@ -521,8 +513,6 @@ QString DolphinViewActionHandler::currentViewModeActionName() const
         return QStringLiteral("icons");
     case DolphinView::DetailsView:
         return QStringLiteral("details");
-    case DolphinView::CompactView:
-        return QStringLiteral("compact");
     default:
         Q_ASSERT(false);
         break;
@@ -693,23 +683,12 @@ KToggleAction *DolphinViewActionHandler::iconsModeAction()
     return iconsView;
 }
 
-KToggleAction *DolphinViewActionHandler::compactModeAction()
-{
-    KToggleAction *iconsView = m_actionCollection->add<KToggleAction>(QStringLiteral("compact"));
-    iconsView->setText(i18nc("@action:inmenu View Mode", "Compact"));
-    iconsView->setToolTip(i18nc("@info", "Compact view mode"));
-    m_actionCollection->setDefaultShortcut(iconsView, Qt::CTRL | Qt::Key_2);
-    iconsView->setIcon(QIcon::fromTheme(QStringLiteral("view-list-details"))); // TODO: discuss with Oxygen-team the wrong (?) name
-    iconsView->setData(QVariant::fromValue(DolphinView::CompactView));
-    return iconsView;
-}
-
 KToggleAction *DolphinViewActionHandler::detailsModeAction()
 {
     KToggleAction *detailsView = m_actionCollection->add<KToggleAction>(QStringLiteral("details"));
     detailsView->setText(i18nc("@action:inmenu View Mode", "Details"));
     detailsView->setToolTip(i18nc("@info", "Details view mode"));
-    m_actionCollection->setDefaultShortcut(detailsView, Qt::CTRL | Qt::Key_3);
+    m_actionCollection->setDefaultShortcut(detailsView, Qt::CTRL | Qt::Key_2);
     detailsView->setIcon(QIcon::fromTheme(QStringLiteral("view-list-tree")));
     detailsView->setData(QVariant::fromValue(DolphinView::DetailsView));
     return detailsView;

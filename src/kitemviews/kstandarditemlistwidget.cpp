@@ -47,10 +47,6 @@ void KStandardItemListWidgetInformant::calculateItemSizeHints(QVector<std::pair<
         calculateIconsLayoutItemSizeHints(logicalHeightHints, logicalWidthHint, view);
         break;
 
-    case KStandardItemListView::CompactLayout:
-        calculateCompactLayoutItemSizeHints(logicalHeightHints, logicalWidthHint, view);
-        break;
-
     case KStandardItemListView::DetailsLayout:
         calculateDetailsLayoutItemSizeHints(logicalHeightHints, logicalWidthHint, view);
         break;
@@ -188,56 +184,6 @@ void KStandardItemListWidgetInformant::calculateIconsLayoutItemSizeHints(QVector
     }
 
     logicalWidthHint = itemWidth;
-}
-
-void KStandardItemListWidgetInformant::calculateCompactLayoutItemSizeHints(QVector<std::pair<qreal, bool>> &logicalHeightHints,
-                                                                           qreal &logicalWidthHint,
-                                                                           const KItemListView *view) const
-{
-    const KItemListStyleOption &option = view->styleOption();
-    const QFontMetrics &normalFontMetrics = option.fontMetrics;
-    const int additionalRolesCount = qMax(view->visibleRoles().count() - 1, 0);
-
-    const QList<QByteArray> &visibleRoles = view->visibleRoles();
-    const bool showOnlyTextRole = (visibleRoles.count() == 1) && (visibleRoles.first() == "text");
-    const qreal maxWidth = option.maxTextWidth;
-    const qreal paddingAndIconWidth = option.padding * 4 + option.iconSize;
-    const qreal height = option.padding * 2 + qMax(option.iconSize, (1 + additionalRolesCount) * normalFontMetrics.lineSpacing());
-
-    const QFontMetrics linkFontMetrics(customizedFontForLinks(option.font));
-
-    for (int index = 0; index < logicalHeightHints.count(); ++index) {
-        if (logicalHeightHints.at(index).first > 0.0) {
-            continue;
-        }
-
-        // If the current item is a link, we use the customized link font metrics instead of the normal font metrics.
-        const QFontMetrics &fontMetrics = itemIsLink(index, view) ? linkFontMetrics : normalFontMetrics;
-
-        // For each row exactly one role is shown. Calculate the maximum required width that is necessary
-        // to show all roles without horizontal clipping.
-        qreal maximumRequiredWidth = 0.0;
-
-        if (showOnlyTextRole) {
-            maximumRequiredWidth = fontMetrics.horizontalAdvance(itemText(index, view));
-        } else {
-            const QHash<QByteArray, QVariant> &values = view->model()->data(index);
-            for (const QByteArray &role : visibleRoles) {
-                const QString &text = roleText(role, values);
-                const qreal requiredWidth = fontMetrics.horizontalAdvance(text);
-                maximumRequiredWidth = qMax(maximumRequiredWidth, requiredWidth);
-            }
-        }
-
-        qreal width = paddingAndIconWidth + maximumRequiredWidth;
-        if (maxWidth > 0 && width > maxWidth) {
-            width = maxWidth;
-        }
-
-        logicalHeightHints[index].first = width;
-    }
-
-    logicalWidthHint = height;
 }
 
 void KStandardItemListWidgetInformant::calculateDetailsLayoutItemSizeHints(QVector<std::pair<qreal, bool>> &logicalHeightHints,
@@ -489,7 +435,7 @@ QRectF KStandardItemListWidget::textRect() const
 
 QRectF KStandardItemListWidget::textFocusRect() const
 {
-    // In the compact- and details-layout a larger textRect() is returned to be aligned
+    // In the details-layout a larger textRect() is returned to be aligned
     // with the iconRect(). This is useful to have a larger selection/hover-area
     // when having a quite large icon size but only one line of text. Still the
     // focus rectangle should be shown as narrow as possible around the text.
@@ -497,15 +443,6 @@ QRectF KStandardItemListWidget::textFocusRect() const
     const_cast<KStandardItemListWidget *>(this)->triggerCacheRefreshing();
 
     switch (m_layout) {
-    case CompactLayout: {
-        QRectF rect = m_textRect;
-        const TextInfo *topText = m_textInfo.value(m_sortedVisibleRoles.first());
-        const TextInfo *bottomText = m_textInfo.value(m_sortedVisibleRoles.last());
-        rect.setTop(topText->pos.y());
-        rect.setBottom(bottomText->pos.y() + bottomText->staticText.size().height());
-        return rect;
-    }
-
     case DetailsLayout: {
         QRectF rect = m_textRect;
         const TextInfo *textInfo = m_textInfo.value(m_sortedVisibleRoles.first());
@@ -543,9 +480,6 @@ QRectF KStandardItemListWidget::selectionRectFull() const
         }
         return rect.adjusted(-padding, 0, padding, 0);
     } else {
-        if (m_layout == CompactLayout) {
-            return rect().adjusted(-padding, 0, padding, 0);
-        }
         return rect();
     }
 }
@@ -1161,7 +1095,7 @@ void KStandardItemListWidget::updatePixmapCache()
         const TextInfo *textInfo = m_textInfo.value("text");
         scaledIconSize = static_cast<int>(textInfo->pos.y() - 2 * padding);
     } else {
-        const int textRowsCount = (m_layout == CompactLayout) ? visibleRoles().count() : 1;
+        const int textRowsCount = 1;
         const qreal requiredTextHeight = textRowsCount * m_customizedFontMetrics.height();
         scaledIconSize = (requiredTextHeight < maxIconHeight) ? widgetSize.height() - 2 * padding : maxIconHeight;
     }
@@ -1211,10 +1145,6 @@ void KStandardItemListWidget::updateTextsCache()
         textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
         textOption.setAlignment(Qt::AlignHCenter);
         break;
-    case CompactLayout:
-        textOption.setAlignment(QApplication::isRightToLeft() ? Qt::AlignRight : Qt::AlignLeft);
-        textOption.setWrapMode(QTextOption::NoWrap);
-        break;
     case DetailsLayout:
         textOption.setAlignment(Qt::AlignLeft);
         textOption.setWrapMode(QTextOption::NoWrap);
@@ -1237,9 +1167,6 @@ void KStandardItemListWidget::updateTextsCache()
     switch (m_layout) {
     case IconsLayout:
         updateIconsLayoutTextCache();
-        break;
-    case CompactLayout:
-        updateCompactLayoutTextCache();
         break;
     case DetailsLayout:
         updateDetailsLayoutTextCache();
@@ -1432,51 +1359,6 @@ void KStandardItemListWidget::updateIconsLayoutTextCache()
 
     // Add a padding to the text rectangle
     m_textRect.adjust(-padding, -padding, padding, padding);
-}
-
-void KStandardItemListWidget::updateCompactLayoutTextCache()
-{
-    // +------+  Name role
-    // | Icon |  Additional role 1
-    // +------+  Additional role 2
-
-    const QHash<QByteArray, QVariant> values = data();
-
-    const KItemListStyleOption &option = styleOption();
-    const qreal widgetHeight = size().height();
-    const qreal lineSpacing = m_customizedFontMetrics.lineSpacing();
-    const qreal textLinesHeight = qMax(visibleRoles().count(), 1) * lineSpacing;
-
-    qreal maximumRequiredTextWidth = 0;
-    const qreal x = QApplication::isRightToLeft() ? option.padding : option.padding * 3 + styleOption().iconSize;
-    qreal y = qRound((widgetHeight - textLinesHeight) / 2);
-    const qreal maxWidth = size().width() - styleOption().iconSize - 4 * option.padding;
-    for (const QByteArray &role : std::as_const(m_sortedVisibleRoles)) {
-        const QString text = escapeString(roleText(role, values));
-        TextInfo *textInfo = m_textInfo.value(role);
-        textInfo->staticText.setText(text);
-
-        qreal requiredWidth = m_customizedFontMetrics.horizontalAdvance(text);
-        if (requiredWidth > maxWidth) {
-            requiredWidth = maxWidth;
-            if (role == "text") {
-                const QString elidedText = elideText(text, maxWidth);
-                textInfo->staticText.setText(elidedText);
-            } else {
-                const QString elidedText = m_customizedFontMetrics.elidedText(text, Qt::ElideRight, maxWidth);
-                textInfo->staticText.setText(elidedText);
-            }
-        }
-
-        textInfo->pos = QPointF(x, y);
-        textInfo->staticText.setTextWidth(maxWidth);
-
-        maximumRequiredTextWidth = qMax(maximumRequiredTextWidth, requiredWidth);
-
-        y += lineSpacing;
-    }
-
-    m_textRect = QRectF(x - option.padding, 0, maximumRequiredTextWidth + 2 * option.padding, widgetHeight);
 }
 
 void KStandardItemListWidget::updateDetailsLayoutTextCache()

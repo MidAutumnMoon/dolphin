@@ -678,7 +678,7 @@ void DolphinMainWindowTest::testGoActions()
     QCOMPARE(m_mainWindow->m_activeViewContainer->view()->selectedItems().count(), 1); // …and it should be selected, too.
     // Pressing arrow keys should not only move the keyboard focus but also select the item.
     // We press "Down" to select "c" below and then "Up" so the folder "b" we just emerged from is selected for the first time.
-    m_mainWindow->actionCollection()->action(QStringLiteral("compact"))->trigger();
+    m_mainWindow->actionCollection()->action(QStringLiteral("details"))->trigger();
     QTest::keyClick(m_mainWindow->activeViewContainer()->view()->m_container, Qt::Key::Key_Down, Qt::NoModifier);
     QCOMPARE(m_mainWindow->m_activeViewContainer->view()->selectedItems().count(), 1);
     QVERIFY2(currentItemUrl() != childDirUrl, "The current item didn't change after pressing the 'Down' key.");

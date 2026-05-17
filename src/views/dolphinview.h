@@ -45,7 +45,7 @@ class QRegularExpression;
 /**
  * @short Represents a view for the directory content.
  *
- * View modes for icons, compact and details are supported. It's
+ * View modes for icons and details are supported. It's
  * possible to adjust:
  * - sort order
  * - sort type
@@ -73,13 +73,7 @@ public:
          * The icon, the name and the size of the items are
          * shown per default as a table.
          */
-        DetailsView,
-
-        /**
-         * The items are shown as icons with the name-label aligned
-         * to the right side.
-         */
-        CompactView
+        DetailsView = 2
     };
 
     /**
@@ -401,8 +395,7 @@ public:
 
     /**
      * Set the offset for any view items that small statusbar would otherwise
-     * cover. For example, in compact view this is used to make sure no
-     * item is covered by statusbar.
+     * cover. This is used to make sure no item is covered by statusbar.
      */
     void setStatusBarOffset(int offset);
 

@@ -197,7 +197,6 @@ if(HAVE_BALOO)
 endif()
 
 kconfig_add_kcfg_files(dolphinprivate
-    settings/dolphin_compactmodesettings.kcfgc
     settings/dolphin_directoryviewpropertysettings.kcfgc
     settings/dolphin_detailsmodesettings.kcfgc
     settings/dolphin_iconsmodesettings.kcfgc
@@ -601,7 +600,6 @@ install(
 install( FILES settings/dolphin_directoryviewpropertysettings.kcfg
                settings/dolphin_generalsettings.kcfg
                settings/dolphin_contextmenusettings.kcfg
-               settings/dolphin_compactmodesettings.kcfg
                settings/dolphin_iconsmodesettings.kcfg
                settings/dolphin_detailsmodesettings.kcfg
                settings/dolphin_versioncontrolsettings.kcfg

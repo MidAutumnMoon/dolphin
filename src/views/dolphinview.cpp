@@ -2492,9 +2492,6 @@ void DolphinView::applyModeToView()
     case IconsView:
         m_view->setItemLayout(KFileItemListView::IconsLayout);
         break;
-    case CompactView:
-        m_view->setItemLayout(KFileItemListView::CompactLayout);
-        break;
     case DetailsView:
         m_view->setItemLayout(KFileItemListView::DetailsLayout);
         break;

@@ -6,7 +6,6 @@
 
 #include "viewsettingstab.h"
 
-#include "dolphin_compactmodesettings.h"
 #include "dolphin_detailsmodesettings.h"
 #include "dolphin_iconsmodesettings.h"
 #include "dolphinfontrequester.h"
@@ -95,15 +94,6 @@ ViewSettingsTab::ViewSettingsTab(Mode mode, QWidget *parent)
         topLayout->addRow(i18nc("@label:listbox", "Maximum lines:"), m_maxLinesBox);
         break;
     }
-    case CompactMode: {
-        m_widthBox = new QComboBox();
-        m_widthBox->addItem(i18nc("@item:inlistbox Maximum width", "Unlimited"));
-        m_widthBox->addItem(i18nc("@item:inlistbox Maximum width", "Small"));
-        m_widthBox->addItem(i18nc("@item:inlistbox Maximum width", "Medium"));
-        m_widthBox->addItem(i18nc("@item:inlistbox Maximum width", "Large"));
-        topLayout->addRow(i18nc("@label:listbox", "Maximum width:"), m_widthBox);
-        break;
-    }
     case DetailsMode:
         m_expandableFolders = new QCheckBox(i18nc("@option:check", "Expandable"));
         topLayout->addRow(i18nc("@label:checkbox", "Folders:"), m_expandableFolders);
@@ -135,9 +125,6 @@ ViewSettingsTab::ViewSettingsTab(Mode mode, QWidget *parent)
     case IconsMode:
         connect(m_widthBox, &QComboBox::currentIndexChanged, this, &ViewSettingsTab::changed);
         connect(m_maxLinesBox, &QComboBox::currentIndexChanged, this, &ViewSettingsTab::changed);
-        break;
-    case CompactMode:
-        connect(m_widthBox, &QComboBox::currentIndexChanged, this, &ViewSettingsTab::changed);
         break;
     case DetailsMode:
         connect(m_entireRow, &QCheckBox::toggled, this, &ViewSettingsTab::changed);
@@ -174,10 +161,6 @@ void ViewSettingsTab::applySettings()
         IconsModeSettings::setTextWidthIndex(m_widthBox->currentIndex());
         IconsModeSettings::setMaximumTextLines(m_maxLinesBox->currentIndex());
         IconsModeSettings::self()->save();
-        break;
-    case CompactMode:
-        CompactModeSettings::setMaximumTextWidthIndex(m_widthBox->currentIndex());
-        CompactModeSettings::self()->save();
         break;
     case DetailsMode:
         auto detailsModeSettings = DetailsModeSettings::self();
@@ -235,9 +218,6 @@ void ViewSettingsTab::loadSettings()
     case IconsMode:
         m_widthBox->setCurrentIndex(IconsModeSettings::textWidthIndex());
         m_maxLinesBox->setCurrentIndex(IconsModeSettings::maximumTextLines());
-        break;
-    case CompactMode:
-        m_widthBox->setCurrentIndex(CompactModeSettings::maximumTextWidthIndex());
         break;
     case DetailsMode:
         m_entireRow->setChecked(DetailsModeSettings::highlightEntireRow());

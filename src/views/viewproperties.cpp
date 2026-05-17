@@ -22,7 +22,8 @@ namespace
 const int AdditionalInfoViewPropertiesVersion = 1;
 const int NameRolePropertiesVersion = 2;
 const int DateRolePropertiesVersion = 4;
-const int CurrentViewPropertiesVersion = 4;
+const int RemoveCompactViewPropertiesVersion = 5;
+const int CurrentViewPropertiesVersion = 5;
 
 const QString MetaDataKey = QStringLiteral("kde.fm.viewproperties#1");
 
@@ -250,6 +251,11 @@ ViewProperties::ViewProperties(const QUrl &url)
             Q_ASSERT(m_node->version() == DateRolePropertiesVersion);
         }
 
+        if (m_node->version() < RemoveCompactViewPropertiesVersion) {
+            convertCompactViewToDetailsView();
+            Q_ASSERT(m_node->version() == RemoveCompactViewPropertiesVersion);
+        }
+
         m_node->setVersion(CurrentViewPropertiesVersion);
     }
 }
@@ -293,7 +299,11 @@ void ViewProperties::setViewMode(DolphinView::Mode mode)
 
 DolphinView::Mode ViewProperties::viewMode() const
 {
-    const int mode = qBound(0, m_node->viewMode(), 2);
+    const int mode = m_node->viewMode();
+    // CompactView (1) has been removed. Migrate to DetailsView (2).
+    if (mode == 1) {
+        return DolphinView::DetailsView;
+    }
     return static_cast<DolphinView::Mode>(mode);
 }
 
@@ -662,9 +672,6 @@ QString ViewProperties::viewModePrefix() const
     case DolphinView::IconsView:
         prefix = QStringLiteral("Icons_");
         break;
-    case DolphinView::CompactView:
-        prefix = QStringLiteral("Compact_");
-        break;
     case DolphinView::DetailsView:
         prefix = QStringLiteral("Details_");
         break;
@@ -748,6 +755,16 @@ void ViewProperties::convertDateRoleToModificationTimeRole()
     m_node->setVisibleRoles(visibleRoles);
     m_node->setSortRole(sortRole);
     m_node->setVersion(DateRolePropertiesVersion);
+    update();
+}
+
+void ViewProperties::convertCompactViewToDetailsView()
+{
+    // CompactView (1) has been removed. Migrate to DetailsView (2).
+    if (m_node->viewMode() == 1) {
+        m_node->setViewMode(DolphinView::DetailsView);
+    }
+    m_node->setVersion(RemoveCompactViewPropertiesVersion);
     update();
 }
 
