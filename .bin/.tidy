@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+FIX=""
+FILES=""
+
+for arg in "$@"; do
+  case "$arg" in
+    --fix) FIX="--fix" ;;
+    -*) echo "usage: .tidy [--fix] [file ...]" >&2; exit 1 ;;
+    *) FILES="$FILES $arg" ;;
+  esac
+done
+
+# Default: all src/ .cpp files
+if [ -z "$FILES" ]; then
+  FILES=$(find src -name '*.cpp' -o -name '*.cc')
+fi
+
+# shellcheck disable=SC2086
+clang-tidy $FIX -p build $FILES
