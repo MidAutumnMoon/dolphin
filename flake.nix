@@ -11,7 +11,7 @@
 
         # Dev tools
         devTools = with pkgs; [
-            clang-tools # clangd + clang-format
+            llvmPackages_latest.clang-tools
             neocmakelsp
         ];
 
