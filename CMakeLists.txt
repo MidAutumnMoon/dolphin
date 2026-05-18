@@ -85,15 +85,7 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
     ColorScheme
 )
 
-find_package(PackageKitQt6)
-set_package_properties(PackageKitQt6
-        PROPERTIES DESCRIPTION "Software Manager integration"
-        TYPE RECOMMENDED
-        PURPOSE "Used in the service menu installer"
-        )
-if(PackageKitQt6_FOUND)
-  set(HAVE_PACKAGEKIT TRUE)
-endif()
+
 
 find_package(KF6FileMetaData ${KF6_MIN_VERSION})
 set_package_properties(KF6FileMetaData PROPERTIES

@@ -9,7 +9,8 @@
 
 #include "config-dolphin.h"
 #include "dolphinmainwindow.h"
-#include "dolphinpackageinstaller.h"
+#include <QDesktopServices>
+#include <QTimer>
 #include "dolphinviewcontainer.h"
 
 #include <KActionCollection>
@@ -59,14 +60,14 @@ void Admin::guideUserTowardsInstallingAdminWorker()
         std::cin.ignore();
 
         /// Installing admin worker
-        DolphinPackageInstaller adminWorkerInstaller{ADMIN_WORKER_PACKAGE_NAME, QUrl(QStringLiteral("appstream://org.kde.kio.admin")), isWorkerInstalled};
-        QObject::connect(&adminWorkerInstaller, &KJob::result, [](KJob *job) {
-            if (job->error()) {
-                std::cout << qPrintable(job->errorString()) << '\n';
-                exit(1);
+        QDesktopServices::openUrl(QUrl(QStringLiteral("appstream://org.kde.kio.admin")));
+        auto waitForSuccess = new QTimer();
+        QObject::connect(waitForSuccess, &QTimer::timeout, []() {
+            if (isWorkerInstalled()) {
+                exit(0);
             }
         });
-        adminWorkerInstaller.exec();
+        waitForSuccess->start(3000);
     }
 }
 

@@ -30,7 +30,6 @@ Dependencies:
     "require":
       "frameworks/baloo": "@latest-kf6"
       "libraries/baloo-widgets": "@same"
-      "third-party/packagekit-qt": "@latest"
 
   - "on": ["Linux/Qt6", "Linux/Qt6Next", "Windows/Qt6", "macOS/Qt6"]
     "require":

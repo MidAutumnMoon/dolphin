@@ -67,8 +67,8 @@ private:
 private Q_SLOTS:
     /**
      * Opens KFind if KFind is installed.
-     * If KFind is not installed, this method asynchronously starts a Filelight installation using DolphinPackageInstaller. @see DolphinPackageInstaller.
-     * Installation success or failure is reported through showMessage(). @see Popup::showMessage().
+     * If KFind is not installed, this method opens the appstream URL so the user can install it manually.
+     * Installation success is reported through showMessage(). @see Popup::showMessage().
      * Installation progress is reported through showInstallationProgress(). @see Popup::showInstallationProgress().
      */
     void slotKFindButtonClicked();

@@ -6,7 +6,8 @@
 
 #include "diskspaceusagemenu.h"
 
-#include "dolphinpackageinstaller.h"
+#include <QDesktopServices>
+#include <QTimer>
 #include "global.h"
 
 #include <KIO/ApplicationLauncherJob>
@@ -32,34 +33,23 @@ void DiskSpaceUsageMenu::slotInstallFilelightButtonClicked()
 #ifdef Q_OS_WIN
     QDesktopServices::openUrl(QUrl("https://apps.kde.org/filelight"));
 #else
-    auto packageInstaller = new DolphinPackageInstaller(
-        FILELIGHT_PACKAGE_NAME,
-        QUrl("appstream://org.kde.filelight.desktop"),
-        []() {
-            return KService::serviceByDesktopName(QStringLiteral("org.kde.filelight"));
-        },
-        this);
-    connect(packageInstaller, &KJob::result, this, [this](KJob *job) {
-        Q_EMIT showInstallationProgress(QString(), 100); // Hides the progress information in the status bar.
-        if (job->error()) {
-            Q_EMIT showMessage(job->errorString(), KMessageWidget::Error);
-        } else {
+    QDesktopServices::openUrl(QUrl("appstream://org.kde.filelight.desktop"));
+    auto waitForSuccess = new QTimer(this);
+    connect(waitForSuccess, &QTimer::timeout, this, [this, waitForSuccess]() {
+        if (KService::serviceByDesktopName(QStringLiteral("org.kde.filelight"))) {
+            Q_EMIT showInstallationProgress(QString(), 100);
             Q_EMIT showMessage(xi18nc("@info", "<application>Filelight</application> installed successfully."), KMessageWidget::Positive);
             if (isVisible()) {
                 hide();
                 updateMenu();
                 show();
             }
+            waitForSuccess->deleteLater();
         }
     });
     const auto installationTaskText{i18nc("@info:status", "Installing Filelight…")};
     Q_EMIT showInstallationProgress(installationTaskText, -1);
-    connect(packageInstaller, &KJob::percentChanged, this, [this, installationTaskText](KJob * /* job */, long unsigned int percent) {
-        if (percent < 100) { // Ignore some weird reported values.
-            Q_EMIT showInstallationProgress(installationTaskText, percent);
-        }
-    });
-    packageInstaller->start();
+    waitForSuccess->start(3000);
 #endif
 }
 

@@ -8,7 +8,8 @@
 #include "popup.h"
 
 #include "config-dolphin.h"
-#include "dolphinpackageinstaller.h"
+#include <QDesktopServices>
+#include <QTimer>
 #include "global.h"
 #include "selectors/dateselector.h"
 #include "selectors/filetypeselector.h"
@@ -353,29 +354,18 @@ void Popup::slotKFindButtonClicked()
 #ifdef Q_OS_WIN
     QDesktopServices::openUrl(QUrl("https://apps.kde.org/kfind"));
 #else
-    auto packageInstaller = new DolphinPackageInstaller(
-        KFIND_PACKAGE_NAME,
-        QUrl("appstream://org.kde.kfind"),
-        []() {
-            return KService::serviceByDesktopName(kFindDesktopName);
-        },
-        this);
-    connect(packageInstaller, &KJob::result, this, [this](KJob *job) {
-        Q_EMIT showInstallationProgress(QString(), 100); // Hides the progress information in the status bar.
-        if (job->error()) {
-            Q_EMIT showMessage(job->errorString(), KMessageWidget::Error);
-        } else {
+    QDesktopServices::openUrl(QUrl("appstream://org.kde.kfind"));
+    auto waitForSuccess = new QTimer(this);
+    connect(waitForSuccess, &QTimer::timeout, this, [this, waitForSuccess]() {
+        if (KService::serviceByDesktopName(kFindDesktopName)) {
+            Q_EMIT showInstallationProgress(QString(), 100);
             Q_EMIT showMessage(xi18nc("@info", "<application>KFind</application> installed successfully."), KMessageWidget::Positive);
-            updateStateToMatch(m_searchConfiguration); // Updates m_kfindButton from an "Install KFind…" to an "Open KFind" button.
+            updateStateToMatch(m_searchConfiguration);
+            waitForSuccess->deleteLater();
         }
     });
     const auto installationTaskText{i18nc("@info:status", "Installing KFind")};
     Q_EMIT showInstallationProgress(installationTaskText, -1);
-    connect(packageInstaller, &KJob::percentChanged, this, [this, installationTaskText](KJob * /* job */, long unsigned int percent) {
-        if (percent < 100) { // Ignore some weird reported values.
-            Q_EMIT showInstallationProgress(installationTaskText, percent);
-        }
-    });
-    packageInstaller->start();
+    waitForSuccess->start(3000);
 #endif
 }

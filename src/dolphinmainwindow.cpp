@@ -142,7 +142,7 @@ DolphinMainWindow::DolphinMainWindow()
 #ifndef Q_OS_WIN
     setWindowFlags(Qt::WindowContextHelpButtonHint);
 #endif
-    setComponentName(QStringLiteral("dolphin-next"), QGuiApplication::applicationDisplayName());
+    setComponentName(QStringLiteral("dolphin"), QGuiApplication::applicationDisplayName());
     setObjectName(QStringLiteral("Dolphin#"));
 
     setStateConfigGroup("State");
@@ -218,10 +218,6 @@ DolphinMainWindow::DolphinMainWindow()
 
     QAction *toggleFilterBarAction = actionCollection()->action(QStringLiteral("toggle_filter"));
     toggleFilterBarAction->setChecked(GeneralSettings::filterBar());
-
-    if (firstRun) {
-        menuBar()->setVisible(false);
-    }
 
     QAction *showMenuBarAction = actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar));
     showMenuBarAction->setChecked(!menuBar()->isHidden()); //workaround for bug #171080
@@ -741,7 +737,7 @@ void DolphinMainWindow::slotSaveSession()
         m_sessionSaveScheduled = true;
     } else if (!m_sessionSaveTimer->isActive()) {
         // No point in saving the session if the timer is running (since it will save the session again when it times out).
-        KConfigGui::setSessionConfig(QStringLiteral("dolphin-next"), QStringLiteral("dolphin-next"));
+        KConfigGui::setSessionConfig(QStringLiteral("dolphin"), QStringLiteral("dolphin"));
         KConfig *config = KConfigGui::sessionConfig();
         saveGlobalProperties(config);
         savePropertiesInternal(config, 1);

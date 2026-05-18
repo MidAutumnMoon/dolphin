@@ -47,8 +47,8 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     /**
-     * Asynchronously starts a Filelight installation using DolphinPackageInstaller. @see DolphinPackageInstaller.
-     * Installation success or failure is reported through showMessage(). @see StatusBarSpaceInfo::showMessage().
+     * Opens the appstream URL so the user can install Filelight manually.
+     * Installation success is reported through showMessage(). @see StatusBarSpaceInfo::showMessage().
      * Installation progress is reported through showInstallationProgress(). @see StatusBarSpaceInfo::showInstallationProgress().
      */
     void slotInstallFilelightButtonClicked();

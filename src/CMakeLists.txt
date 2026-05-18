@@ -1,8 +1,6 @@
 include(ECMAddAppIcon)
 
 set(ADMIN_WORKER_PACKAGE_NAME "kio-admin")
-set(FILELIGHT_PACKAGE_NAME "filelight")
-set(KFIND_PACKAGE_NAME "kfind")
 
 configure_file(config-dolphin.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-dolphin.h)
 
@@ -227,7 +225,6 @@ target_sources(dolphinstatic PRIVATE
     dolphincontextmenu.cpp
     dolphinnavigatorswidgetaction.cpp
     dolphintabbar.cpp
-    dolphinpackageinstaller.cpp
     dolphinplacesmodelsingleton.cpp
     dolphinrecenttabsmenu.cpp
     dolphintabpage.cpp
@@ -296,7 +293,6 @@ target_sources(dolphinstatic PRIVATE
     dolphincontextmenu.h
     dolphinnavigatorswidgetaction.h
     dolphintabbar.h
-    dolphinpackageinstaller.h
     dolphinplacesmodelsingleton.h
     dolphinrecenttabsmenu.h
     dolphintabpage.h
@@ -410,13 +406,6 @@ target_link_libraries(dolphinstatic
     KF6::Notifications
     KF6::BookmarksWidgets
 )
-
-if(HAVE_PACKAGEKIT)
-  target_link_libraries(
-        dolphinstatic
-        PK::packagekitqt6
-    )
-endif()
 
 add_executable(dolphin)
 

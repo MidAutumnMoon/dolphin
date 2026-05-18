@@ -55,9 +55,6 @@
             kdePackages.kfilemetadata
             kdePackages.baloo
             kdePackages.baloo-widgets
-
-            # Misc
-            kdePackages.packagekit-qt # service menu installer (optional)
         ];
 
         runtimeDeps = with pkgs; [

@@ -8,6 +8,8 @@ Personal fork of KDE's file manager. See the [upstream project](https://invent.k
 
 **Icons view removed.** Only details view mode is available.
 
+**PackageKit integration removed.** No more automatic package installation via PackageKit. 
+
 **Version control integration removed.** The dolphinvcs library, VCS plugin loading, and all version control overlays/actions in the UI are gone.
 
 **Telemetry (KUserFeedback) removed.** No usage data is collected or sent.
