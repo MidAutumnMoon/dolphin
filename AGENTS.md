@@ -4,7 +4,7 @@ This is a personal fork of KDE Dolphin file manager, tuned to my own habits.
 
 ## Rules
 
-- This is a C++20 / Qt6 / KDE Frameworks 6 project. Use KDE conventions: `slotFooBar()` slots, `Q_EMIT`, `i18n()` for user-visible strings. Prefer `this->member` over `m_` prefix for new code — match existing style in old files.
+- This is a C++20 / Qt6 / KDE Frameworks 6 project. Use KDE conventions: `Q_EMIT`, `i18n()` for user-visible strings. Don't prefix slot names with `slot`. Prefer `this->member` over `m_` prefix for new code — match existing style in old files.
 - `kitemviews/` is a custom view framework — not QListView. Rendering bugs are easy to introduce here. Tread carefully.
 - Settings live in `.kcfg` schemas → `.kcfgc` generates C++ classes. Adding a new setting means touching both plus migration.
 - New dependencies go in `flake.nix`. This is a Nix-managed build.
