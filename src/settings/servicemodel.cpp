@@ -7,6 +7,11 @@
 #include "servicemodel.h"
 
 #include <QIcon>
+#include <qabstractitemmodel.h>
+#include <qnamespace.h>
+#include <qobject.h>
+#include <qtmetamacros.h>
+#include <qtpreprocessorsupport.h>
 
 ServiceModel::ServiceModel(QObject *parent)
     : QAbstractListModel(parent)

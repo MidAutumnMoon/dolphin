@@ -4,9 +4,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-# This file got automatically created by ECM, do not edit
 # See https://clang.llvm.org/docs/ClangFormatStyleOptions.html for the config options
-# and https://community.kde.org/Policies/Frameworks_Coding_Style#Clang-format_automatic_code_formatting
 # for clang-format tips & tricks
 ---
 Language: JavaScript
@@ -23,11 +21,11 @@ Language: Cpp
 # below are only things set that diverge from this style!
 BasedOnStyle: WebKit
 
-# enforce C++20 (e.g. for std::vector<std::vector<lala>>
-Standard: c++23
+Standard: c++20
 
 # 4 spaces indent
 TabWidth: 4
+IndentWidth: 4
 
 # 80 wide lines
 ColumnLimit: 80
@@ -152,3 +150,5 @@ AllowShortLambdasOnASingleLine: Empty
 
 # We do not want clang-format to put all arguments on a new line
 AllowAllArgumentsOnNextLine: false
+
+BreakStringLiterals: false

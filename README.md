@@ -14,4 +14,6 @@ Personal fork of KDE's file manager. See the [upstream project](https://invent.k
 
 **Telemetry (KUserFeedback) removed.** No usage data is collected or sent.
 
+**Linux-only.** The app refuses to start on non-Linux systems.
+
 **Separate config file.** Uses `dolphin-nextrc` instead of `dolphinrc`, so settings don't conflict with stock Dolphin.

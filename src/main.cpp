@@ -24,8 +24,11 @@
 #include <KIconTheme>
 #include <KLocalizedString>
 #include <KWindowSystem>
-#include <print>
+#include <cstdlib>
+#include <qkeysequence.h>
+#include <qlogging.h>
 #include <qobject.h>
+#include <qtenvironmentvariables.h>
 
 #define HAVE_STYLE_MANAGER __has_include(<KStyleManager>)
 #if HAVE_STYLE_MANAGER
@@ -34,6 +37,7 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QSysInfo>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QSessionManager>
@@ -42,29 +46,30 @@
 #include <private/qtx11extras_p.h>
 #endif
 
-#ifndef Q_OS_WIN
 #include <unistd.h>
-#endif
-#include <iostream>
+#include <print>
 
 constexpr auto dolphinTranslationDomain{"dolphin"};
 
 int main(int argc, char **argv)
 {
-#ifndef Q_OS_WIN
-    // Prohibit using sudo or kdesu (but allow using the root user directly)
-    if (getuid() == 0 && (!qEnvironmentVariableIsEmpty("SUDO_USER") || !qEnvironmentVariableIsEmpty("KDESU_USER"))) {
-        QCoreApplication app(argc, argv); // Needed for the xi18ndc() call below.
-        std::cout << qPrintable(
-            xi18ndc(dolphinTranslationDomain,
-                    "@info:shell %1 is a terminal command",
-                    "Running <application>Dolphin</application> with <command>sudo</command> is discouraged. Please run <icode>%1</icode> instead.",
-                    QStringLiteral("dolphin --sudo")))
-                  << '\n';
-        // We could perform a privilege de-escalation here and continue as normal. It is a bit safer though to simply let the user restart without sudo.
-        return EXIT_FAILURE;
+    if (QSysInfo::kernelType() != "linux") {
+        qFatal(
+            "Dolphin requires Linux. Detected: %s",
+            qPrintable(QSysInfo::kernelType()));
     }
-#endif
+
+    // Prohibit using sudo or kdesu (but allow using the root user directly)
+    if (getuid() == 0
+        && (!qEnvironmentVariableIsEmpty("SUDO_USER")
+            || !qEnvironmentVariableIsEmpty("KDESU_USER")))
+    {
+        // We could perform a privilege de-escalation here and continue as
+        // normal. It is a bit safer though to simply let the user restart
+        // without sudo.
+        qFatal(
+            "Running Dolphin with sudo is discouraged. Please run 'dolphin --sudo' instead.");
+    }
 
     /**
      * trigger initialisation of proper icon theme
@@ -78,21 +83,11 @@ int main(int argc, char **argv)
             QStringLiteral("org.kde.dolphin"),
             QApplication::windowIcon()));
 
-    std::println("{}", "hello");
-
 #if HAVE_STYLE_MANAGER
     /**
      * trigger initialisation of proper application style
      */
     KStyleManager::initStyle();
-#else
-    /**
-     * For Windows and macOS: use Breeze if available
-     * Of all tested styles that works the best for us
-     */
-#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
-    QApplication::setStyle(QStringLiteral("breeze"));
-#endif
 #endif
 
     KLocalizedString::setApplicationDomain(dolphinTranslationDomain);
