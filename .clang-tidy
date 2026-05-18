@@ -15,7 +15,8 @@ Checks: >
   -readability-identifier-length,
   -readability-function-cognitive-complexity,
   -readability-implicit-bool-conversion,
-  -readability-use-anyofallof
+  -readability-use-anyofallof,
+  -readability-redundant-access-specifiers
 
 WarningsAsErrors: ''
 
