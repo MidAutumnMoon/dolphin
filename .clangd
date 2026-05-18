@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/clangd.json
 CompileFlags:
   Add:
-    - -std=c++20
+    - -std=c++23
     - -Wno-unknown-warning-option
     # ── pedantic baseline ──
     - -Wall
@@ -15,11 +15,16 @@ CompileFlags:
     - -Wformat=2
     - -Wmisleading-indentation
     # ── style / hygiene ──
+    - -Wenum-conversion
+    - -Werror=return-type
+    - -Wimplicit-conversion
     - -Wold-style-cast
     - -Wdouble-promotion
     - -Wundef
 
 Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
   Suppress:
     - pp_file_not_found # Qt/KDE generated headers not on disk
     - drv_unknown_argument # GCC-only flags passed to Clang

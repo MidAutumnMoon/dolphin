@@ -24,6 +24,7 @@
 #include <KIconTheme>
 #include <KLocalizedString>
 #include <KWindowSystem>
+#include <print>
 #include <qobject.h>
 
 #define HAVE_STYLE_MANAGER __has_include(<KStyleManager>)
@@ -76,6 +77,8 @@ int main(int argc, char **argv)
         QIcon::fromTheme(
             QStringLiteral("org.kde.dolphin"),
             QApplication::windowIcon()));
+
+    std::println("{}", "hello");
 
 #if HAVE_STYLE_MANAGER
     /**
