@@ -5,7 +5,7 @@ int main()
 {
     const auto closeActiveSplitView = QStringLiteral("CloseActiveSplitView");
     const auto closeSplitViewChoice = QStringLiteral("CloseSplitViewChoice");
-    auto config = KSharedConfig::openConfig(QStringLiteral("dolphinrc"));
+    auto config = KSharedConfig::openConfig(QStringLiteral("dolphin-nextrc"));
 
     KConfigGroup general = config->group(QStringLiteral("General"));
     if (!general.hasKey(closeActiveSplitView)) {

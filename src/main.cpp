@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 
     KLocalizedString::setApplicationDomain(dolphinTranslationDomain);
 
-    KAboutData aboutData(QStringLiteral("dolphin"),
+    KAboutData aboutData(QStringLiteral("dolphin-next"),
                          i18n("Dolphin"),
                          QStringLiteral(DOLPHIN_VERSION_STRING),
                          i18nc("@title", "File Manager"),
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
     DBusInterface interface;
 
     if (!app.isSessionRestored()) {
-        KConfigGui::setSessionConfig(QStringLiteral("dolphin"), QStringLiteral("dolphin"));
+        KConfigGui::setSessionConfig(QStringLiteral("dolphin-next"), QStringLiteral("dolphin-next"));
     }
 
     // Only restore session if:

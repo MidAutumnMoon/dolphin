@@ -142,7 +142,7 @@ DolphinMainWindow::DolphinMainWindow()
 #ifndef Q_OS_WIN
     setWindowFlags(Qt::WindowContextHelpButtonHint);
 #endif
-    setComponentName(QStringLiteral("dolphin"), QGuiApplication::applicationDisplayName());
+    setComponentName(QStringLiteral("dolphin-next"), QGuiApplication::applicationDisplayName());
     setObjectName(QStringLiteral("Dolphin#"));
 
     setStateConfigGroup("State");
@@ -741,7 +741,7 @@ void DolphinMainWindow::slotSaveSession()
         m_sessionSaveScheduled = true;
     } else if (!m_sessionSaveTimer->isActive()) {
         // No point in saving the session if the timer is running (since it will save the session again when it times out).
-        KConfigGui::setSessionConfig(QStringLiteral("dolphin"), QStringLiteral("dolphin"));
+        KConfigGui::setSessionConfig(QStringLiteral("dolphin-next"), QStringLiteral("dolphin-next"));
         KConfig *config = KConfigGui::sessionConfig();
         saveGlobalProperties(config);
         savePropertiesInternal(config, 1);
