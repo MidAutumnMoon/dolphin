@@ -13,7 +13,7 @@
 #include "dolphin_generalsettings.h"
 #include "dolphin_version.h"
 #include "dolphindebug.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "global.h"
 
 #include <KAboutData>
@@ -24,6 +24,7 @@
 #include <KIconTheme>
 #include <KLocalizedString>
 #include <KWindowSystem>
+#include <qobject.h>
 
 #define HAVE_STYLE_MANAGER __has_include(<KStyleManager>)
 #if HAVE_STYLE_MANAGER
@@ -70,7 +71,11 @@ int main(int argc, char **argv)
     KIconTheme::initTheme();
 
     QApplication app(argc, argv);
-    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("org.kde.dolphin"), app.windowIcon()));
+
+    QApplication::setWindowIcon(
+        QIcon::fromTheme(
+            QStringLiteral("org.kde.dolphin"),
+            QApplication::windowIcon()));
 
 #if HAVE_STYLE_MANAGER
     /**
@@ -168,13 +173,22 @@ int main(int argc, char **argv)
         auto disableSessionManagement = [](QSessionManager &sm) {
             sm.setRestartHint(QSessionManager::RestartNever);
         };
-        QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
-        QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
+
+        QObject::connect(
+            &app,
+            &QGuiApplication::commitDataRequest,
+            disableSessionManagement);
+
+        QObject::connect(
+            &app,
+            &QGuiApplication::saveStateRequest,
+            disableSessionManagement);
 
         KDBusService dolphinDBusService;
         DBusInterface interface;
         interface.setAsDaemon();
-        return app.exec();
+
+        return QApplication::exec();
     }
 
     if (!parser.isSet(QStringLiteral("new-window"))) {
@@ -203,7 +217,7 @@ int main(int argc, char **argv)
         urls.append(urls.last());
     }
 
-    DolphinMainWindow *mainWindow = new DolphinMainWindow();
+    auto *mainWindow = new DolphinMainWindow();
 
     if (openFiles) {
         mainWindow->openFiles(urls, splitView);
@@ -233,9 +247,16 @@ int main(int argc, char **argv)
     // 3. There is a session available to restore
     if (app.isSessionRestored() || GeneralSettings::rememberOpenedTabs()) {
         // Get saved state data for the last-closed Dolphin instance
-        const QString serviceName = QStringLiteral("org.kde.dolphin-%1").arg(QCoreApplication::applicationPid());
-        const auto instancesCount = Dolphin::dolphinGuiInstances(serviceName).size();
-        if (instancesCount == 1 || (app.isSessionRestored() && instancesCount > 0)) {
+        const QString serviceName =
+            QStringLiteral("org.kde.dolphin-%1")
+                .arg(QCoreApplication::applicationPid());
+
+        const auto instancesCount =
+            Dolphin::dolphinGuiInstances(serviceName).size();
+
+        if (instancesCount == 1
+            || (app.isSessionRestored() && instancesCount > 0))
+        {
             const QString className = KXmlGuiWindow::classNameOfToplevel(1);
             if (className == QLatin1String("DolphinMainWindow")) {
                 mainWindow->restore(1);
@@ -264,5 +285,5 @@ int main(int argc, char **argv)
         Admin::guideUserTowardsUsingAdminWorker();
     }
 
-    return app.exec(); // krazy:exclude=crash;
+    return QApplication::exec(); // krazy:exclude=crash;
 }

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "dolphin_generalsettings.h"
 #include "dolphinnewfilemenu.h"
 #include "dolphintabpage.h"

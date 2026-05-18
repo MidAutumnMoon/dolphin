@@ -5,7 +5,7 @@
  */
 
 #include "dolphinbookmarkhandler.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "dolphinviewcontainer.h"
 #include "global.h"
 #include <KActionCollection>

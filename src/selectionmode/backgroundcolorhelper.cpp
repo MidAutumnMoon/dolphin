@@ -90,12 +90,14 @@ void BackgroundColorHelper::updateBackgroundColor()
         newHue %= 360; // hue needs to be between 0 and 359 per Qt documentation.
     }
 
-    m_backgroundColor = QColor::fromHsv(newHue,
-                                        // Saturation should be closer to the saturation of the active color
-                                        // because otherwise the selection mode color might overpower it.
-                                        .7 * activeBackgroundColor.saturation() + .3 * positiveBackgroundColor.saturation(),
-                                        (activeBackgroundColor.value() + positiveBackgroundColor.value()) / 2,
-                                        (activeBackgroundColor.alpha() + positiveBackgroundColor.alpha()) / 2);
+    m_backgroundColor = QColor::fromHsv(
+        newHue,
+        // Saturation should be closer to the saturation of the active color
+        // because otherwise the selection mode color might overpower it.
+        (.7 * activeBackgroundColor.saturation())
+            + (.3 * positiveBackgroundColor.saturation()),
+        (activeBackgroundColor.value() + positiveBackgroundColor.value()) / 2,
+        (activeBackgroundColor.alpha() + positiveBackgroundColor.alpha()) / 2);
 }
 
 BackgroundColorHelper *BackgroundColorHelper::s_instance = nullptr;

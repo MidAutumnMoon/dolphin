@@ -5,7 +5,7 @@
  */
 
 #include "statusandlocationbarssettingspage.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "dolphinviewcontainer.h"
 #include "settings/interface/folderstabssettingspage.h"
 

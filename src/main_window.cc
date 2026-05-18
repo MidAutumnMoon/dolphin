@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 
 #include "admin/workerintegration.h"
 #include "dolphin_generalsettings.h"
@@ -439,13 +439,19 @@ void DolphinMainWindow::openNewMainWindow()
     Dolphin::openNewWindow({m_activeViewContainer->url()}, this);
 }
 
+// TODO: Open new tab next to the current tab, NOT after the last one.
 void DolphinMainWindow::openNewActivatedTab()
 {
     // keep browsers compatibility, new tab is always after last one
-    auto openNewTabAfterLastTabConfigured = GeneralSettings::openNewTabAfterLastTab();
+    auto openNewTabAfterLastTabConfigured =
+        GeneralSettings::openNewTabAfterLastTab();
+
     GeneralSettings::setOpenNewTabAfterLastTab(true);
+
     m_tabWidget->openNewActivatedTab();
-    GeneralSettings::setOpenNewTabAfterLastTab(openNewTabAfterLastTabConfigured);
+
+    GeneralSettings::setOpenNewTabAfterLastTab(
+        openNewTabAfterLastTabConfigured);
 }
 
 void DolphinMainWindow::addToPlaces()
@@ -3193,4 +3199,4 @@ void DolphinMainWindow::slotDoubleClickViewBackground(Qt::MouseButton button)
     }
 }
 
-#include "moc_dolphinmainwindow.cpp"
+#include "moc_main_window.cpp"

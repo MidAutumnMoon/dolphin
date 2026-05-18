@@ -9,7 +9,7 @@
 
 #include "dolphin_generalsettings.h"
 #include "dolphincontextmenu.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "dolphinremoveaction.h"
 #include "kitemviews/kfileitemlisttostring.h"
 

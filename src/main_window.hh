@@ -6,8 +6,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef DOLPHIN_MAINWINDOW_H
-#define DOLPHIN_MAINWINDOW_H
+#pragma once
 
 #include "config-dolphin.h"
 #include "disabledactionnotifier.h"
@@ -84,12 +83,12 @@ public:
      * having a split view setup, the nonactive view
      * is usually shown in darker colors.
      */
-    DolphinViewContainer *activeViewContainer() const;
+    [[nodiscard]] DolphinViewContainer *activeViewContainer() const;
 
     /**
      * Returns view container for all tabs
      */
-    QVector<DolphinViewContainer *> viewContainers() const;
+    [[nodiscard]] QVector<DolphinViewContainer *> viewContainers() const;
 
     /**
      * Opens each directory in \p dirs in a separate tab. If \a splitView is set,
@@ -135,9 +134,9 @@ public:
      */
     void setSessionAutoSaveEnabled(bool enable);
 
-    bool isFoldersPanelEnabled() const;
-    bool isInformationPanelEnabled() const;
-    bool isSplitViewEnabledInCurrentTab() const;
+    [[nodiscard]] bool isFoldersPanelEnabled() const;
+    [[nodiscard]] bool isInformationPanelEnabled() const;
+    [[nodiscard]] bool isSplitViewEnabledInCurrentTab() const;
 
     /**
      * Activates a user set action when double clicking the view's background.
@@ -821,5 +820,3 @@ inline KNewFileMenu *DolphinMainWindow::newFileMenu() const
 {
     return m_newFileMenu;
 }
-
-#endif // DOLPHIN_MAINWINDOW_H

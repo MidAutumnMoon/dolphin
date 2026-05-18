@@ -7,7 +7,7 @@
 #include "generalviewsettingspage.h"
 #include "dolphin_generalsettings.h"
 #include "dolphindebug.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "views/viewproperties.h"
 
 #include <KActionCollection>

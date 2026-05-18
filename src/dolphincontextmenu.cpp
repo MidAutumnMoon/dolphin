@@ -8,7 +8,7 @@
 
 #include "dolphin_contextmenusettings.h"
 #include "dolphin_generalsettings.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "dolphinnewfilemenu.h"
 #include "dolphinplacesmodelsingleton.h"
 #include "dolphinremoveaction.h"

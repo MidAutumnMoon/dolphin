@@ -8,7 +8,7 @@
 #include "workerintegration.h"
 
 #include "config-dolphin.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include <QDesktopServices>
 #include <QTimer>
 #include "dolphinviewcontainer.h"

@@ -9,7 +9,7 @@
 #include "config-dolphin.h"
 #include "contextmenu/contextmenusettingspage.h"
 #include "dolphin_generalsettings.h"
-#include "dolphinmainwindow.h"
+#include "main_window.hh"
 #include "interface/interfacesettingspage.h"
 #include "trash/trashsettingspage.h"
 #include "viewmodes/viewsettingspage.h"

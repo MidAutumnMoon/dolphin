@@ -220,7 +220,7 @@ target_sources(dolphinstatic PRIVATE
     disabledactionnotifier.cpp
     dolphinbookmarkhandler.cpp
     dolphindockwidget.cpp
-    dolphinmainwindow.cpp
+    main_window.cc
     dolphinviewcontainer.cpp
     dolphincontextmenu.cpp
     dolphinnavigatorswidgetaction.cpp
@@ -288,7 +288,7 @@ target_sources(dolphinstatic PRIVATE
     animatedheightwidget.h
     dolphinbookmarkhandler.h
     dolphindockwidget.h
-    dolphinmainwindow.h
+    main_window.hh
     dolphinviewcontainer.h
     dolphincontextmenu.h
     dolphinnavigatorswidgetaction.h
@@ -388,8 +388,8 @@ kconfig_add_kcfg_files(dolphinstatic
     search/dolphin_searchsettings.kcfgc
 )
 
-qt_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/dolphinmainwindow.h org.kde.DolphinMainWindow.xml)
-qt_add_dbus_adaptor(dolphin_dbus_SRCS ${CMAKE_CURRENT_BINARY_DIR}/org.kde.DolphinMainWindow.xml dolphinmainwindow.h DolphinMainWindow)
+qt_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/main_window.hh org.kde.DolphinMainWindow.xml)
+qt_add_dbus_adaptor(dolphin_dbus_SRCS ${CMAKE_CURRENT_BINARY_DIR}/org.kde.DolphinMainWindow.xml main_window.hh DolphinMainWindow)
 qt_add_dbus_interface(dolphin_dbus_SRCS ${CMAKE_CURRENT_BINARY_DIR}/org.kde.DolphinMainWindow.xml dolphinmainwindowinterface)
 qt_add_dbus_interface(dolphin_dbus_SRCS panels/terminal/org.kde.KIOFuse.VFS.xml kiofuse_interface)
 
